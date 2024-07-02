@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { ContributionsService } from './contributions.service';
@@ -24,6 +23,7 @@ export class ContributionsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.contributionsService.contributionAll();
   }
@@ -41,10 +41,5 @@ export class ContributionsController {
     @Body() updateContributionDto: UpdateContributionDto,
   ) {
     return this.contributionsService.updateContri(+id, updateContributionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.contributionsService.remove(+id);
   }
 }

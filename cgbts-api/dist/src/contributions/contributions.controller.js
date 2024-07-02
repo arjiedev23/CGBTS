@@ -34,9 +34,6 @@ let ContributionsController = class ContributionsController {
     updateContri(id, updateContributionDto) {
         return this.contributionsService.updateContri(+id, updateContributionDto);
     }
-    remove(id) {
-        return this.contributionsService.remove(+id);
-    }
 };
 exports.ContributionsController = ContributionsController;
 __decorate([
@@ -49,6 +46,7 @@ __decorate([
 ], ContributionsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -70,13 +68,6 @@ __decorate([
     __metadata("design:paramtypes", [String, update_contribution_dto_1.UpdateContributionDto]),
     __metadata("design:returntype", void 0)
 ], ContributionsController.prototype, "updateContri", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], ContributionsController.prototype, "remove", null);
 exports.ContributionsController = ContributionsController = __decorate([
     (0, common_1.Controller)('contributions'),
     __metadata("design:paramtypes", [contributions_service_1.ContributionsService])

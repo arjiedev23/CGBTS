@@ -48,11 +48,15 @@ let ContributionsService = class ContributionsService {
             if (id === null) {
                 return { respCode: 0, respMessage: 'Something went wrong!' };
             }
-            return await this.prismaService.contributions.findMany({
+            const res = await this.prismaService.contributions.findMany({
                 where: {
                     contribution_id: id,
                 },
             });
+            if (res.length === 0) {
+                return { respCode: 0, respMessage: 'No data found!' };
+            }
+            return res;
         }
         catch (ex) {
             throw new Error(ex);
@@ -70,9 +74,6 @@ let ContributionsService = class ContributionsService {
         catch (ex) {
             throw new Error(ex);
         }
-    }
-    async remove(id) {
-        return `This action removes a #${id} contribution`;
     }
 };
 exports.ContributionsService = ContributionsService;

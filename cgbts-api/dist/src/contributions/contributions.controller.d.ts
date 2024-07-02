@@ -39,5 +39,4 @@ export declare class ContributionsController {
         userID: number;
         agency_id: number;
     }>;
-    remove(id: string): Promise<string>;
 }
