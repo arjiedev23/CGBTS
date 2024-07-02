@@ -10,13 +10,13 @@ export class UsersService {
       const dob = new Date(createUserDto.date_of_birth);
       createUserDto.date_of_birth = dob.toISOString();
 
-      const check = await this.prismaService.users.findMany({
+      const checkUser = await this.prismaService.users.findMany({
         where: {
           username: createUserDto.username,
         },
       });
 
-      if (check.length != 0) {
+      if (checkUser.length != 0) {
         return {
           respCode: 0,
           respMessage: 'Username already exist.',
@@ -27,10 +27,7 @@ export class UsersService {
       const res = await this.createData(createUserDto);
 
       if (!res) {
-        return {
-          respCode: 0,
-          respMessage: 'Something went wrong!',
-        };
+        return { respCode: 0, respMessage: 'Something went wrong!' };
       }
 
       return {

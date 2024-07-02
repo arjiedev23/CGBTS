@@ -14,13 +14,12 @@ export class AuthService {
 
   async login(loginDTO: LoginDTO): Promise<any> {
     const { username, password } = loginDTO;
-
     const users = await this.prismaService.users.findUnique({
       where: { username: username },
     });
 
     if (!users) {
-      throw new NotFoundException('user not found');
+      throw new NotFoundException('Invalid username and password!');
     }
 
     if (users.password != password) {

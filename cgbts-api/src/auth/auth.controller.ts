@@ -7,7 +7,7 @@ import { LoginDTO } from './dto/login-user.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
+  @Post('/login')
   async login(
     @Req() request: Request,
     @Req() response: Response,
@@ -17,14 +17,14 @@ export class AuthController {
       const result = await this.authService.login(loginDTO);
       return {
         respCode: '1',
-        message: 'Successfully login!',
+        respMessage: 'Successfully login!',
         result: result,
       };
     } catch (err) {
-      return response.status(500).json({
-        status: 'Error!',
-        message: 'Internal Server Error!',
-      });
+      return {
+        respCode: '0',
+        respMessage: err.message,
+      };
     }
   }
 }
