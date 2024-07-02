@@ -1,14 +1,14 @@
 export class CreateUserDto {
-  first_name: string;
-  last_name: string;
-  middle_name: string;
-  address: string;
-  sex: string;
-  date_of_birth: Date;
-  email: string;
-  phone_number: string;
   password: string;
   username: string;
+  email: string;
+  phone_number: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  date_of_birth: Date;
+  address: string;
+  sex: string;
   province: string;
   city_municipal: string;
   barangay: string;

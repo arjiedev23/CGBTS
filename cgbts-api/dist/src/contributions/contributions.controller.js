@@ -17,21 +17,22 @@ const common_1 = require("@nestjs/common");
 const contributions_service_1 = require("./contributions.service");
 const create_contribution_dto_1 = require("./dto/create-contribution.dto");
 const update_contribution_dto_1 = require("./dto/update-contribution.dto");
+const auth_guard_1 = require("../auth/auth.guard");
 let ContributionsController = class ContributionsController {
     constructor(contributionsService) {
         this.contributionsService = contributionsService;
     }
     create(createContributionDto) {
-        return this.contributionsService.create(createContributionDto);
+        return this.contributionsService.createContribution(createContributionDto);
     }
     findAll() {
-        return this.contributionsService.findAll();
+        return this.contributionsService.contributionAll();
     }
-    findOne(id) {
-        return this.contributionsService.findOne(+id);
+    getContributions(id) {
+        return this.contributionsService.getContributions(+id);
     }
-    update(id, updateContributionDto) {
-        return this.contributionsService.update(+id, updateContributionDto);
+    updateContri(id, updateContributionDto) {
+        return this.contributionsService.updateContri(+id, updateContributionDto);
     }
     remove(id) {
         return this.contributionsService.remove(+id);
@@ -40,6 +41,7 @@ let ContributionsController = class ContributionsController {
 exports.ContributionsController = ContributionsController;
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_contribution_dto_1.CreateContributionDto]),
@@ -52,20 +54,22 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ContributionsController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
+    (0, common_1.Get)('getContribution/:id'),
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], ContributionsController.prototype, "findOne", null);
+], ContributionsController.prototype, "getContributions", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
+    (0, common_1.Patch)('updateContri/:id'),
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_contribution_dto_1.UpdateContributionDto]),
     __metadata("design:returntype", void 0)
-], ContributionsController.prototype, "update", null);
+], ContributionsController.prototype, "updateContri", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),

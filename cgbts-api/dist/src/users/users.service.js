@@ -81,16 +81,25 @@ let UsersService = class UsersService {
             throw new Error(`Error creating data: ${error.message}`);
         }
     }
-    async findAll() {
+    async viewUsers() {
         try {
-            const res = this.prismaService.users.findMany();
-            if ((await res).length == 0) {
-                return { respCode: 0, respMessage: 'No data found!' };
-            }
-            return { respCode: 1, respMessage: 'successs', data: res };
+            const res = await this.prismaService.users.findMany();
+            return res;
         }
         catch (ex) {
             throw new Error(ex);
+        }
+    }
+    async findAll() {
+        try {
+            const res = await this.viewUsers();
+            if ((await res).length === 0) {
+                return { respCode: 0, respMessage: 'No data found!' };
+            }
+            return { respCode: 1, respMessage: 'success', data: res };
+        }
+        catch (ex) {
+            throw new Error();
         }
     }
     async update(id, updateUserDto) {

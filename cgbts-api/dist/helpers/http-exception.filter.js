@@ -21,13 +21,35 @@ let HttpExceptionFilter = HttpExceptionFilter_1 = class HttpExceptionFilter {
     catch(exception, host) {
         const { httpAdapter } = this.httpAdapterHost;
         const ctx = host.switchToHttp();
-        const httpStatus = common_1.HttpStatus.INTERNAL_SERVER_ERROR;
         this.logger.error(`Exception: ${exception.message}, stack: ${exception.stack}`);
         const responseBody = {
-            status: httpStatus,
-            message: 'Something went wrong',
+            respCode: 0,
+            respMessage: 'Something went wrong!',
         };
-        httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
+        switch (exception.getStatus()) {
+            case 401: {
+                responseBody.respCode = exception.getStatus();
+                responseBody.respMessage = 'Access denied!';
+                break;
+            }
+            case 500: {
+                responseBody.respCode = exception.getStatus();
+                responseBody.respMessage =
+                    'Error occured while processing your request!';
+                break;
+            }
+            case 404: {
+                responseBody.respCode = exception.getStatus();
+                responseBody.respMessage = '404 - NOT FOUND';
+                break;
+            }
+            default: {
+                responseBody.respCode = exception.getStatus();
+                responseBody.respMessage = 'Something went wrong!';
+                break;
+            }
+        }
+        httpAdapter.reply(ctx.getResponse(), responseBody, exception.getStatus());
     }
 };
 exports.HttpExceptionFilter = HttpExceptionFilter;

@@ -27,7 +27,7 @@ export declare class UsersController {
     } | {
         respCode: number;
         respMessage: string;
-        data: import(".prisma/client").Prisma.PrismaPromise<{
+        data: {
             userID: number;
             username: string;
             password: string;
@@ -49,7 +49,7 @@ export declare class UsersController {
             country: string;
             province: string;
             role_Id: number;
-        }[]>;
+        }[];
     }>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
         userID: number;

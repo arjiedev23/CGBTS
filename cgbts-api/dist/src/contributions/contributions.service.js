@@ -16,19 +16,62 @@ let ContributionsService = class ContributionsService {
     constructor(prismaService) {
         this.prismaService = prismaService;
     }
-    create(createContributionDto) {
-        return 'This action adds a new contribution';
+    async createContribution(createContributionDto) {
+        try {
+            const postDate = new Date(createContributionDto.post_date);
+            const pDate = postDate.toISOString();
+            const res = await this.prismaService.contributions.create({
+                data: {
+                    amount: createContributionDto.amount,
+                    post_date: pDate,
+                    status: createContributionDto.status,
+                    userID: createContributionDto.userID,
+                    agency_id: createContributionDto.agency_id,
+                },
+            });
+            return res;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
     }
-    findAll() {
-        return `This action returns all contributions`;
+    async contributionAll() {
+        try {
+            return await this.prismaService.contributions.findMany();
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
     }
-    findOne(id) {
-        return `This action returns a #${id} contribution`;
+    async getContributions(id) {
+        try {
+            if (id === null) {
+                return { respCode: 0, respMessage: 'Something went wrong!' };
+            }
+            return await this.prismaService.contributions.findMany({
+                where: {
+                    contribution_id: id,
+                },
+            });
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
     }
-    update(id, updateContributionDto) {
-        return `This action updates a #${id} contribution`;
+    async updateContri(id, updateContributionDto) {
+        try {
+            return await this.prismaService.contributions.update({
+                where: {
+                    contribution_id: id,
+                },
+                data: updateContributionDto,
+            });
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
     }
-    remove(id) {
+    async remove(id) {
         return `This action removes a #${id} contribution`;
     }
 };

@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
+
   async create(createUserDto: Prisma.UsersCreateInput) {
     try {
       const dob = new Date(createUserDto.date_of_birth);
@@ -77,17 +78,25 @@ export class UsersService {
     }
   }
 
+  async viewUsers() {
+    try {
+      const res = await this.prismaService.users.findMany();
+      return res;
+    } catch (ex) {
+      throw new Error(ex);
+    }
+  }
+
   async findAll() {
     try {
-      const res = this.prismaService.users.findMany();
-
-      if ((await res).length == 0) {
+      const res = await this.viewUsers();
+      if ((await res).length === 0) {
         return { respCode: 0, respMessage: 'No data found!' };
       }
 
-      return { respCode: 1, respMessage: 'successs', data: res };
+      return { respCode: 1, respMessage: 'success', data: res };
     } catch (ex) {
-      throw new Error(ex);
+      throw new Error();
     }
   }
 
