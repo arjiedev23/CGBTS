@@ -28,8 +28,8 @@ let ContributionsController = class ContributionsController {
     findAll() {
         return this.contributionsService.contributionAll();
     }
-    getContributions(id) {
-        return this.contributionsService.getContributions(+id);
+    getContributions(user, agency) {
+        return this.contributionsService.getContributions(user, agency);
     }
     updateContri(id, updateContributionDto) {
         return this.contributionsService.updateContri(+id, updateContributionDto);
@@ -52,11 +52,12 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ContributionsController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('getContribution/:id'),
+    (0, common_1.Get)('/getContribution'),
     (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Query)('userid')),
+    __param(1, (0, common_1.Query)('agencyid')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", void 0)
 ], ContributionsController.prototype, "getContributions", null);
 __decorate([

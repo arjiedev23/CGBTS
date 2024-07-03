@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const contributions_service_1 = require("./contributions.service");
 const contributions_controller_1 = require("./contributions.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
+const users_service_1 = require("../users/users.service");
 let ContributionsModule = class ContributionsModule {
 };
 exports.ContributionsModule = ContributionsModule;
@@ -18,7 +19,7 @@ exports.ContributionsModule = ContributionsModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule],
         controllers: [contributions_controller_1.ContributionsController],
-        providers: [contributions_service_1.ContributionsService],
+        providers: [contributions_service_1.ContributionsService, users_service_1.UsersService],
     })
 ], ContributionsModule);
 //# sourceMappingURL=contributions.module.js.map

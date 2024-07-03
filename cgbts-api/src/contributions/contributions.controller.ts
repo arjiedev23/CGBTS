@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ContributionsService } from './contributions.service';
 import { CreateContributionDto } from './dto/create-contribution.dto';
@@ -28,10 +29,13 @@ export class ContributionsController {
     return this.contributionsService.contributionAll();
   }
 
-  @Get('getContribution/:id')
+  @Get('/getContribution')
   @UseGuards(JwtAuthGuard)
-  getContributions(@Param('id') id: string) {
-    return this.contributionsService.getContributions(+id);
+  getContributions(
+    @Query('userid') user: number,
+    @Query('agencyid') agency: number,
+  ) {
+    return this.contributionsService.getContributions(user, agency);
   }
 
   @Patch('updateContri/:id')
