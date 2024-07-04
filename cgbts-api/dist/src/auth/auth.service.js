@@ -31,8 +31,20 @@ let AuthService = class AuthService {
         if (users.password != password) {
             throw new common_1.NotFoundException('Invalid password');
         }
+        const date = new Date();
+        const dateFormat = date.toISOString();
+        const lastLogin = await this.prismaService.users.update({
+            where: {
+                userID: users.userID,
+            },
+            data: {
+                last_login: dateFormat,
+            },
+        });
         return {
+            data: users,
             token: this.jwtService.sign({ username }),
+            loginDate: lastLogin.last_login.toLocaleString(),
         };
     }
 };

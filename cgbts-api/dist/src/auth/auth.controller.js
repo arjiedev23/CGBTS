@@ -26,7 +26,7 @@ let AuthController = class AuthController {
             return {
                 respCode: '1',
                 respMessage: 'Successfully login!',
-                result: result,
+                res: result,
             };
         }
         catch (err) {
