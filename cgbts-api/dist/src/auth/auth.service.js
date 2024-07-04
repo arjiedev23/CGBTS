@@ -41,10 +41,27 @@ let AuthService = class AuthService {
                 last_login: dateFormat,
             },
         });
+        if (users.status === '0') {
+            return {
+                respCode: 0,
+                respMessage: 'User is inactive!',
+                status: users.status,
+            };
+        }
+        if (users.status === '-1') {
+            return {
+                respCode: -1,
+                respMessage: 'User is suspended!',
+                status: users.status,
+            };
+        }
         return {
-            data: users,
+            data: {
+                userid: users.userID,
+                fullname: users.first_name + ' ' + users.middle_name + ' ' + users.last_name,
+            },
             token: this.jwtService.sign({ username }),
-            loginDate: lastLogin.last_login.toLocaleString(),
+            last_login: lastLogin.last_login.toLocaleString(),
         };
     }
 };

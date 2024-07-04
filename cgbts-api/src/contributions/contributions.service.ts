@@ -43,7 +43,6 @@ export class ContributionsService {
           userID: createContributionDto.userID,
         },
       });
-      console.log(checkContri.length);
 
       if (checkContri.length != 0) {
         return {
@@ -136,6 +135,10 @@ export class ContributionsService {
   async createContri(data: CreateContributionDto): Promise<any> {
     try {
       const pDate = data.post_date.toISOString();
+      const monthYear =
+        getMonthName(data.post_date.getMonth() + 1) +
+        ' ' +
+        data.post_date.getFullYear();
       const addContri = this.prismaService.contributions.create({
         data: {
           amount: data.amount,
@@ -143,6 +146,21 @@ export class ContributionsService {
           status: data.status,
           userID: data.userID,
           agency_id: data.agency_id,
+          notifications: {
+            create: {
+              message:
+                'Your contribution payment for the applicable month of ' +
+                monthYear +
+                ' amounting to ' +
+                data.amount +
+                ' has been posted',
+              is_read: 0,
+              user_id: data.userID,
+            },
+          },
+        },
+        include: {
+          notifications: true,
         },
       });
 
@@ -150,5 +168,36 @@ export class ContributionsService {
     } catch (err) {
       throw new Error(err);
     }
+  }
+}
+
+function getMonthName(monthNumber: number): string {
+  switch (monthNumber) {
+    case 1:
+      return 'Jan';
+    case 2:
+      return 'Feb';
+    case 3:
+      return 'Mar';
+    case 4:
+      return 'Apr';
+    case 5:
+      return 'May';
+    case 6:
+      return 'Jun';
+    case 7:
+      return 'Jul';
+    case 8:
+      return 'Aug';
+    case 9:
+      return 'Sep';
+    case 10:
+      return 'Oct';
+    case 11:
+      return 'Nov';
+    case 12:
+      return 'Dec';
+    default:
+      return 'Invalid month number';
   }
 }

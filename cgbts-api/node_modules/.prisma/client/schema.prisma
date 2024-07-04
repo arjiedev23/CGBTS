@@ -36,6 +36,7 @@ model Users {
   province       String
   role_Id        Int             @default(1)
   contributions  contributions[]
+  notifications  notifications[]
 }
 
 model user_roles {
@@ -53,6 +54,7 @@ model contributions {
   user            Users              @relation(fields: [userID], references: [userID])
   userID          Int
   agency_id       Int
+  notifications   notifications[]
 }
 
 model agency_information {
@@ -61,4 +63,15 @@ model agency_information {
   description   String
   contact_info  String
   contributions contributions[]
+}
+
+model notifications {
+  notification_id Int           @id @default(autoincrement())
+  message         String
+  is_read         Int
+  created_at      DateTime      @default(now())
+  user            Users         @relation(fields: [user_id], references: [userID])
+  contributions   contributions @relation(fields: [Contribution_id], references: [contribution_id])
+  user_id         Int
+  Contribution_id Int
 }
