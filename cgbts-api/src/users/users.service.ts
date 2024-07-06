@@ -72,7 +72,7 @@ export class UsersService {
         },
       });
 
-      return createdData; // Return the created data object
+      return createdData;
     } catch (error) {
       throw new Error(`Error creating data: ${error.message}`);
     }

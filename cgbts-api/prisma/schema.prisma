@@ -14,8 +14,8 @@ datasource db {
 }
 
 model Users {
-  userID         Int             @id @default(autoincrement())
-  username       String          @unique
+  userID         Int              @id @default(autoincrement())
+  username       String           @unique
   password       String
   email          String
   phone_number   String
@@ -24,19 +24,20 @@ model Users {
   last_name      String
   date_of_birth  DateTime
   address        String
-  create_at      DateTime        @default(now())
-  updated_at     DateTime?       @db.Timestamp(0)
+  create_at      DateTime         @default(now())
+  updated_at     DateTime?        @db.Timestamp(0)
   status         String
-  last_login     DateTime?       @db.Timestamp(0)
+  last_login     DateTime?        @db.Timestamp(0)
   sex            String
   barangay       String
   city_municipal String
   postal_code    Int
   country        String
   province       String
-  role_Id        Int             @default(1)
+  role_Id        Int              @default(1)
   contributions  contributions[]
   notifications  notifications[]
+  benefit_claims benefit_claims[]
 }
 
 model user_roles {
@@ -58,11 +59,12 @@ model contributions {
 }
 
 model agency_information {
-  agency_id     Int             @id @default(autoincrement())
-  agency_name   String
-  description   String
-  contact_info  String
-  contributions contributions[]
+  agency_id      Int              @id @default(autoincrement())
+  agency_name    String
+  description    String
+  contact_info   String
+  contributions  contributions[]
+  benefit_claims benefit_claims[]
 }
 
 model notifications {
@@ -74,4 +76,17 @@ model notifications {
   contributions   contributions @relation(fields: [Contribution_id], references: [contribution_id])
   user_id         Int
   Contribution_id Int
+}
+
+model benefit_claims {
+  claim_id     Int                @id @default(autoincrement())
+  claim_amount Decimal
+  claim_status String
+  submitted_at DateTime           @default(now())
+  processed_ad DateTime           @db.Timestamp(0)
+  remarks      String
+  users        Users              @relation(fields: [userID], references: [userID])
+  agency       agency_information @relation(fields: [benefit_type], references: [agency_id])
+  userID       Int
+  benefit_type Int
 }

@@ -3,6 +3,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { CreateContributionDto } from './dto/create-contribution.dto';
 
+interface contribution {
+  post_month: string;
+  sss: string;
+  pagibig: string;
+  philhealth: string;
+  totalContribution: number;
+}
+
 @Injectable()
 export class ContributionsService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -101,16 +109,51 @@ export class ContributionsService {
     }
   }
 
-  async userContributions(userid: number, agencyid: number) {
+  async userContributions(userid: number, agencyid: number): Promise<any> {
     try {
-      const data = await this.prismaService.contributions.findMany({
+      const hireDate = await this.prismaService.users.findUnique({
         where: {
           userID: userid,
-          agency_id: agencyid,
+        },
+        select: {
+          create_at: true,
         },
       });
 
-      return data;
+      const data = await this.prismaService.contributions.findMany({
+        where: {
+          userID: userid,
+        },
+        select: {
+          post_date: true,
+        },
+      });
+
+      if (data.length == 0) {
+        return null;
+      }
+
+      const getPostMonth = getMonthsAndYears(hireDate.create_at.toString());
+      const postMonth = getPostMonth.length;
+      const contList: contribution[] = [];
+
+      for (let i = 0; i <= postMonth - 1; i++) {
+        const sss = this.getUserContribution(userid, 2, getPostMonth[i]);
+        const pagibig = this.getUserContribution(userid, 3, getPostMonth[i]);
+        const philhealth = this.getUserContribution(userid, 4, getPostMonth[i]);
+        contList.push({
+          post_month: getPostMonth[i],
+          sss: await sss,
+          pagibig: await pagibig,
+          philhealth: await philhealth,
+          totalContribution:
+            Number(await sss) +
+            Number(await pagibig) +
+            Number(await philhealth),
+        });
+      }
+
+      return { totalContributions: data.length, contributions: contList };
     } catch (ex) {
       throw new Error();
     }
@@ -169,9 +212,61 @@ export class ContributionsService {
       throw new Error(err);
     }
   }
+
+  async getUserContribution(
+    userId: number,
+    agency: number,
+    postDate: string,
+  ): Promise<any> {
+    try {
+      const [monthStr, yearStr] = postDate.split('/');
+      const month = parseInt(monthStr, 10);
+      const year = parseInt(yearStr, 10);
+
+      const userContri = await this.prismaService.contributions.findFirst({
+        where: {
+          userID: userId,
+          agency_id: agency,
+          post_date: {
+            gte: new Date(year, month - 1, 1),
+            lt: new Date(year, month, 1),
+          },
+        },
+        select: {
+          amount: true,
+        },
+      });
+
+      const res = userContri == null ? '0' : userContri.amount;
+      return res;
+    } catch (err) {
+      console.log(err.message);
+      throw new Error();
+    }
+  }
 }
 
-function getMonthName(monthNumber: number): string {
+const getMonthsAndYears = (givenDateTime: string) => {
+  // const givenDateTime = '2021-01-29T04:22:22.148Z';
+  const createdDate = new Date(givenDateTime);
+  createdDate.setDate(1);
+  const currentDate = new Date();
+  const dateAndYearList = [
+    createdDate.toLocaleString('en', { month: '2-digit', year: 'numeric' }),
+  ];
+
+  while (
+    createdDate.setMonth(createdDate.getMonth() + 1) < currentDate.getTime()
+  ) {
+    dateAndYearList.unshift(
+      createdDate.toLocaleString('en', { month: '2-digit', year: 'numeric' }),
+    );
+  }
+
+  return dateAndYearList;
+};
+
+const getMonthName = (monthNumber: number): string => {
   switch (monthNumber) {
     case 1:
       return 'Jan';
@@ -200,4 +295,4 @@ function getMonthName(monthNumber: number): string {
     default:
       return 'Invalid month number';
   }
-}
+};

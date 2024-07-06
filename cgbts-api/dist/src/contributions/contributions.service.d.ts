@@ -30,25 +30,11 @@ export declare class ContributionsService {
     } | {
         respCode: number;
         respMesssage: string;
-        totalContributions: number;
-        contributions: {
-            contribution_id: number;
-            amount: Prisma.Decimal;
-            post_date: Date;
-            status: string;
-            userID: number;
-            agency_id: number;
-        }[];
+        totalContributions: any;
+        contributions: any;
         respMessage?: undefined;
     }>;
-    userContributions(userid: number, agencyid: number): Promise<{
-        contribution_id: number;
-        amount: Prisma.Decimal;
-        post_date: Date;
-        status: string;
-        userID: number;
-        agency_id: number;
-    }[]>;
+    userContributions(userid: number, agencyid: number): Promise<any>;
     updateContri(id: number, updateContributionDto: Prisma.contributionsUpdateInput): Promise<{
         contribution_id: number;
         amount: Prisma.Decimal;
@@ -58,4 +44,5 @@ export declare class ContributionsService {
         agency_id: number;
     }>;
     createContri(data: CreateContributionDto): Promise<any>;
+    getUserContribution(userId: number, agency: number, postDate: string): Promise<any>;
 }

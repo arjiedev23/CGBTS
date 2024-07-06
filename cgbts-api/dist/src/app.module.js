@@ -15,6 +15,7 @@ const users_module_1 = require("./users/users.module");
 const contributions_module_1 = require("./contributions/contributions.module");
 const auth_module_1 = require("./auth/auth.module");
 const dashboard_module_1 = require("./dashboard/dashboard.module");
+const benefit_claims_module_1 = require("./benefit-claims/benefit-claims.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,6 +27,7 @@ exports.AppModule = AppModule = __decorate([
             contributions_module_1.ContributionsModule,
             auth_module_1.AuthModule,
             dashboard_module_1.DashboardModule,
+            benefit_claims_module_1.BenefitClaimsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

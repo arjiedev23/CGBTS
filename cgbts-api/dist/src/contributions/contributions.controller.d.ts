@@ -30,15 +30,8 @@ export declare class ContributionsController {
     } | {
         respCode: number;
         respMesssage: string;
-        totalContributions: number;
-        contributions: {
-            contribution_id: number;
-            amount: import("@prisma/client/runtime/library").Decimal;
-            post_date: Date;
-            status: string;
-            userID: number;
-            agency_id: number;
-        }[];
+        totalContributions: any;
+        contributions: any;
         respMessage?: undefined;
     }>;
     updateContri(id: string, updateContributionDto: UpdateContributionDto): Promise<{
