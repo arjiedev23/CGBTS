@@ -105,6 +105,30 @@ let UsersService = class UsersService {
     }
     async updateUser(id, updateUserDto) {
         try {
+            const checkSSS = await this.prismaService.users.findMany({
+                where: {
+                    sss_id: updateUserDto.sss_id,
+                },
+            });
+            if (checkSSS.length != 0) {
+                return { respCode: 0, respMessage: 'Invalid', agency: 2 };
+            }
+            const checkPagibig = await this.prismaService.users.findMany({
+                where: {
+                    pagibig_id: updateUserDto.pagibig_id,
+                },
+            });
+            if (checkPagibig.length != 0) {
+                return { respCode: 0, respMessage: 'Invalid', agency: 3 };
+            }
+            const checkPhilH = await this.prismaService.users.findMany({
+                where: {
+                    philhead_id: updateUserDto.philhealth_id,
+                },
+            });
+            if (checkPhilH.length != 0) {
+                return { respCode: 0, respMessage: 'Invalid', agency: 4 };
+            }
             const update = await this.saveUserUpdate(id, updateUserDto);
             console.log(update);
             if (!update) {
@@ -175,25 +199,18 @@ let UsersService = class UsersService {
                     first_name: data.first_name,
                     last_name: data.last_name,
                     middle_name: data.middle_name,
-                    address: data.address,
                     sex: data.sex,
                     date_of_birth: data.date_of_birth,
                     email: data.email,
                     phone_number: data.phone_number,
-                    password: data.phone_number,
+                    password: data.password,
                     username: data.username,
-                    province: data.province,
-                    city_municipal: data.city_municipal,
-                    barangay: data.barangay,
-                    postal_code: data.postal_code,
-                    country: data.country,
-                    status: data.status,
                 },
             });
             return createdData;
         }
         catch (error) {
-            throw new Error(`Error creating data: ${error.message}`);
+            throw new Error(error.message);
         }
     }
 };

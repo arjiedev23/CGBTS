@@ -58,11 +58,18 @@ export declare class UsersController {
     updateUser(user: string, updateUserDto: UpdateUserDto): Promise<{
         respCode: number;
         respMessage: string;
+        agency: number;
+        updatedDetails?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        agency?: undefined;
         updatedDetails?: undefined;
     } | {
         respCode: number;
         respMessage: string;
         updatedDetails: any;
+        agency?: undefined;
     }>;
     saveInfo(createUserDto: CreateUserInfoDto): Promise<{
         respCode: number;

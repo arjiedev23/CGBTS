@@ -92,12 +92,12 @@ export class ContributionsService {
       }
 
       const res = await this.userContributions(Number(user));
-      const count = res.length;
 
-      if (res.length === 0) {
-        return { respCode: 0, respMessage: 'No data found!' };
+      if (res === null) {
+        return { respCode: 0, respMessage: 'No existing contribution!' };
       }
 
+      const count = res.length;
       return {
         respCode: 1,
         respMesssage: 'success',
@@ -162,8 +162,6 @@ export class ContributionsService {
       }
 
       return {
-        respCode: 1,
-        respMessage: 'success',
         totalContributions: data.length,
         contributions: contList,
       };

@@ -103,11 +103,18 @@ export declare class UsersService {
     updateUser(id: number, updateUserDto: UpdateUserDto): Promise<{
         respCode: number;
         respMessage: string;
+        agency: number;
+        updatedDetails?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        agency?: undefined;
         updatedDetails?: undefined;
     } | {
         respCode: number;
         respMessage: string;
         updatedDetails: any;
+        agency?: undefined;
     }>;
     saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any>;
     saveUserUpdate(user: number, data: UpdateUserDto): Promise<any>;

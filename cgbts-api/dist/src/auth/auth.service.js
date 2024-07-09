@@ -26,10 +26,10 @@ let AuthService = class AuthService {
             where: { username: username },
         });
         if (!users) {
-            throw new common_1.NotFoundException('Invalid username and password!');
+            throw new common_1.NotFoundException('Invalid username or password!');
         }
         if (users.password != password) {
-            throw new common_1.NotFoundException('Invalid password');
+            throw new common_1.NotFoundException('Invalid username or password!');
         }
         const date = new Date();
         const dateFormat = date.toISOString();

@@ -19,11 +19,11 @@ export class AuthService {
     });
 
     if (!users) {
-      throw new NotFoundException('Invalid username and password!');
+      throw new NotFoundException('Invalid username or password!');
     }
 
     if (users.password != password) {
-      throw new NotFoundException('Invalid password');
+      throw new NotFoundException('Invalid username or password!');
     }
 
     const date = new Date();
