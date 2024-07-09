@@ -1,5 +1,5 @@
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, CreateUserInfoDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 export declare class UsersController {
     private readonly usersService;
@@ -34,44 +34,68 @@ export declare class UsersController {
             email: string;
             phone_number: string;
             first_name: string;
-            middle_name: string;
+            middle_name: string | null;
             last_name: string;
             date_of_birth: Date;
-            address: string;
+            address: string | null;
             create_at: Date;
             updated_at: Date | null;
             status: string;
             last_login: Date | null;
-            sex: string;
-            barangay: string;
-            city_municipal: string;
-            postal_code: number;
-            country: string;
-            province: string;
-            role_Id: number;
+            suffix: string | null;
+            sex: string | null;
+            barangay: string | null;
+            city_municipal: string | null;
+            postal_code: number | null;
+            country: string | null;
+            province: string | null;
+            sss_id: string | null;
+            pagibig_id: string | null;
+            philhead_id: string | null;
+            role_Id: number | null;
         }[];
     }>;
-    update(id: string, updateUserDto: UpdateUserDto): Promise<{
+    updateUser(id: string, updateUserDto: UpdateUserDto): Promise<{
         userID: number;
         username: string;
         password: string;
         email: string;
         phone_number: string;
         first_name: string;
-        middle_name: string;
+        middle_name: string | null;
         last_name: string;
         date_of_birth: Date;
-        address: string;
+        address: string | null;
         create_at: Date;
         updated_at: Date | null;
         status: string;
         last_login: Date | null;
-        sex: string;
-        barangay: string;
-        city_municipal: string;
-        postal_code: number;
-        country: string;
-        province: string;
-        role_Id: number;
+        suffix: string | null;
+        sex: string | null;
+        barangay: string | null;
+        city_municipal: string | null;
+        postal_code: number | null;
+        country: string | null;
+        province: string | null;
+        sss_id: string | null;
+        pagibig_id: string | null;
+        philhead_id: string | null;
+        role_Id: number | null;
+    }>;
+    saveInfo(createUserDto: CreateUserInfoDto): Promise<{
+        respCode: number;
+        respMessage: string;
+        user_id: number;
+        data?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        user_id?: undefined;
+        data?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        data: any;
+        user_id?: undefined;
     }>;
 }

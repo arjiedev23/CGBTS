@@ -34,11 +34,39 @@ let UsersService = class UsersService {
             }
             const res = await this.createData(createUserDto);
             if (!res) {
-                return { respCode: 0, respMessage: 'Something went wrong!' };
+                return { respCode: 0, respMessage: 'User does not exist!' };
             }
             return {
                 respCode: 1,
                 respMessage: 'User successfully added.',
+                data: res,
+            };
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async saveMoreInfo(createUserInfoDto) {
+        try {
+            const checkUser = await this.prismaService.users.findMany({
+                where: {
+                    userID: createUserInfoDto.user_id,
+                },
+            });
+            if (checkUser.length != 0) {
+                return {
+                    respCode: 0,
+                    respMessage: 'Username already exist!',
+                    user_id: createUserInfoDto.user_id,
+                };
+            }
+            const res = await this.saveUserInfo(createUserInfoDto);
+            if (!res) {
+                return { respCode: 0, respMessage: 'User does not exist!' };
+            }
+            return {
+                respCode: 1,
+                respMessage: 'User successfully updated!',
                 data: res,
             };
         }
@@ -52,6 +80,60 @@ let UsersService = class UsersService {
                 username: user,
             },
         });
+    }
+    async viewUsers() {
+        try {
+            const res = await this.prismaService.users.findMany();
+            return res;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async findAll() {
+        try {
+            const res = await this.viewUsers();
+            if ((await res).length === 0) {
+                return { respCode: 0, respMessage: 'No data found!' };
+            }
+            return { respCode: 1, respMessage: 'success', data: res };
+        }
+        catch (ex) {
+            throw new Error();
+        }
+    }
+    async updateUser(id, updateUserDto) {
+        try {
+            const update = await this.prismaService.users.update({
+                where: {
+                    userID: id,
+                },
+                data: updateUserDto,
+            });
+            return update;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async saveUserInfo(createUserInfoDto) {
+        try {
+            const saveInfo = await this.prismaService.user_info.create({
+                data: {
+                    first_name: createUserInfoDto.first_name,
+                    last_name: createUserInfoDto.last_name,
+                    middle_name: createUserInfoDto.middle_name,
+                    suffix: createUserInfoDto.suffix,
+                    DOB: createUserInfoDto.DOB,
+                    relationship: createUserInfoDto.relationship,
+                    users_id: createUserInfoDto.user_id,
+                },
+            });
+            return saveInfo;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
     }
     async createData(data) {
         try {
@@ -79,40 +161,6 @@ let UsersService = class UsersService {
         }
         catch (error) {
             throw new Error(`Error creating data: ${error.message}`);
-        }
-    }
-    async viewUsers() {
-        try {
-            const res = await this.prismaService.users.findMany();
-            return res;
-        }
-        catch (ex) {
-            throw new Error(ex);
-        }
-    }
-    async findAll() {
-        try {
-            const res = await this.viewUsers();
-            if ((await res).length === 0) {
-                return { respCode: 0, respMessage: 'No data found!' };
-            }
-            return { respCode: 1, respMessage: 'success', data: res };
-        }
-        catch (ex) {
-            throw new Error();
-        }
-    }
-    async update(id, updateUserDto) {
-        try {
-            return await this.prismaService.users.update({
-                where: {
-                    userID: id,
-                },
-                data: updateUserDto,
-            });
-        }
-        catch (ex) {
-            throw new Error(ex);
         }
     }
 };

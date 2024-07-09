@@ -21,7 +21,7 @@ export declare class ContributionsService {
         userID: number;
         agency_id: number;
     }[]>;
-    getContributions(user: number, agency: number): Promise<{
+    getContributions(user: number): Promise<{
         respCode: number;
         respMessage: string;
         respMesssage?: undefined;
@@ -34,7 +34,7 @@ export declare class ContributionsService {
         contributions: any;
         respMessage?: undefined;
     }>;
-    userContributions(userid: number, agencyid: number): Promise<any>;
+    userContributions(userid: number): Promise<any>;
     updateContri(id: number, updateContributionDto: Prisma.contributionsUpdateInput): Promise<{
         contribution_id: number;
         amount: Prisma.Decimal;

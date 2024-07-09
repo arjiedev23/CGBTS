@@ -7,7 +7,7 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const httpAdapterHost = app.get(core_1.HttpAdapterHost);
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter(httpAdapterHost));
-    await app.listen(3000);
+    await app.listen(1434);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

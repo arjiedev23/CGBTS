@@ -28,8 +28,11 @@ let UsersController = class UsersController {
     findAll() {
         return this.usersService.findAll();
     }
-    update(id, updateUserDto) {
-        return this.usersService.update(+id, updateUserDto);
+    updateUser(id, updateUserDto) {
+        return this.usersService.updateUser(+id, updateUserDto);
+    }
+    saveInfo(createUserDto) {
+        return this.usersService.saveMoreInfo(createUserDto);
     }
 };
 exports.UsersController = UsersController;
@@ -50,12 +53,19 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Query)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", void 0)
-], UsersController.prototype, "update", null);
+], UsersController.prototype, "updateUser", null);
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserInfoDto]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "saveInfo", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

@@ -78,12 +78,12 @@ let ContributionsService = class ContributionsService {
             throw new Error(ex);
         }
     }
-    async getContributions(user, agency) {
+    async getContributions(user) {
         try {
-            if (user.toString().length === 0 || agency.toString().length === 0) {
+            if (user.toString().length === 0) {
                 return { respCode: 0, respMessage: 'Something went wrong!' };
             }
-            const res = await this.userContributions(Number(user), Number(agency));
+            const res = await this.userContributions(Number(user));
             const count = res.length;
             if (res.length === 0) {
                 return { respCode: 0, respMessage: 'No data found!' };
@@ -99,8 +99,9 @@ let ContributionsService = class ContributionsService {
             throw new Error(ex);
         }
     }
-    async userContributions(userid, agencyid) {
+    async userContributions(userid) {
         try {
+            const contList = [];
             const hireDate = await this.prismaService.users.findUnique({
                 where: {
                     userID: userid,
@@ -109,6 +110,8 @@ let ContributionsService = class ContributionsService {
                     create_at: true,
                 },
             });
+            const getPostMonth = getMonthsAndYears(hireDate.create_at.toString());
+            const postMonth = getPostMonth.length;
             const data = await this.prismaService.contributions.findMany({
                 where: {
                     userID: userid,
@@ -120,24 +123,24 @@ let ContributionsService = class ContributionsService {
             if (data.length == 0) {
                 return null;
             }
-            const getPostMonth = getMonthsAndYears(hireDate.create_at.toString());
-            const postMonth = getPostMonth.length;
-            const contList = [];
             for (let i = 0; i <= postMonth - 1; i++) {
-                const sss = this.getUserContribution(userid, process.env.CGBTS_SSS, getPostMonth[i]);
-                const pagibig = this.getUserContribution(userid, process.env.CGBTS_PAGIBIG, getPostMonth[i]);
-                const philhealth = this.getUserContribution(userid, process.env.CGBTS_PHILHEALTH, getPostMonth[i]);
+                const sss = await this.getUserContribution(userid, process.env.CGBTS_SSS, getPostMonth[i]);
+                const pagibig = await this.getUserContribution(userid, process.env.CGBTS_PAGIBIG, getPostMonth[i]);
+                const philhealth = await this.getUserContribution(userid, process.env.CGBTS_PHILHEALTH, getPostMonth[i]);
                 contList.push({
                     post_month: getPostMonth[i],
-                    sss: await sss,
-                    pagibig: await pagibig,
-                    philhealth: await philhealth,
-                    totalContribution: Number(await sss) +
-                        Number(await pagibig) +
-                        Number(await philhealth),
+                    sss: sss,
+                    pagibig: pagibig,
+                    philhealth: philhealth,
+                    totalContribution: Number(sss) + Number(pagibig) + Number(philhealth),
                 });
             }
-            return { totalContributions: data.length, contributions: contList };
+            return {
+                respCode: 1,
+                respMessage: 'success',
+                totalContributions: data.length,
+                contributions: contList,
+            };
         }
         catch (ex) {
             throw new Error();
