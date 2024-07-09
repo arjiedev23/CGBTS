@@ -5,20 +5,17 @@ import {
   Body,
   Patch,
   Param,
-  UseGuards,
   Query,
 } from '@nestjs/common';
 import { ContributionsService } from './contributions.service';
 import { CreateContributionDto } from './dto/create-contribution.dto';
 import { UpdateContributionDto } from './dto/update-contribution.dto';
-import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('contributions')
 export class ContributionsController {
   constructor(private readonly contributionsService: ContributionsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   create(@Body() createContributionDto: CreateContributionDto) {
     return this.contributionsService.createContribution(createContributionDto);
   }

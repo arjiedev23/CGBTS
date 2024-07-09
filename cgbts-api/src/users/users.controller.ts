@@ -1,16 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  UseGuards,
-  Query,
-  Patch,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, CreateUserInfoDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -22,18 +13,20 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Patch(':id')
-  @UseGuards(JwtAuthGuard)
-  updateUser(@Query('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateUser(+id, updateUserDto);
+  @Patch('/updateUser')
+  updateUser(
+    @Query('userid') user: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.updateUser(+user, updateUserDto);
   }
 
-  @Post()
+  @Post('/saveMoreInfo')
   saveInfo(@Body() createUserDto: CreateUserInfoDto) {
     return this.usersService.saveMoreInfo(createUserDto);
   }

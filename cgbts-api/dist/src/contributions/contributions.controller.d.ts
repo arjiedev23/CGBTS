@@ -21,7 +21,7 @@ export declare class ContributionsController {
         userID: number;
         agency_id: number;
     }[]>;
-    getContributions(user: number, agency: number): Promise<{
+    getContributions(user: number): Promise<{
         respCode: number;
         respMessage: string;
         respMesssage?: undefined;

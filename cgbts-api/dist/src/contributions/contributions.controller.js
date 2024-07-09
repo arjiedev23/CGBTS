@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const contributions_service_1 = require("./contributions.service");
 const create_contribution_dto_1 = require("./dto/create-contribution.dto");
 const update_contribution_dto_1 = require("./dto/update-contribution.dto");
-const auth_guard_1 = require("../auth/auth.guard");
 let ContributionsController = class ContributionsController {
     constructor(contributionsService) {
         this.contributionsService = contributionsService;
@@ -28,8 +27,8 @@ let ContributionsController = class ContributionsController {
     findAll() {
         return this.contributionsService.contributionAll();
     }
-    getContributions(user, agency) {
-        return this.contributionsService.getContributions(user, agency);
+    getContributions(user) {
+        return this.contributionsService.getContributions(user);
     }
     updateContri(id, updateContributionDto) {
         return this.contributionsService.updateContri(+id, updateContributionDto);
@@ -38,7 +37,6 @@ let ContributionsController = class ContributionsController {
 exports.ContributionsController = ContributionsController;
 __decorate([
     (0, common_1.Post)(),
-    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_contribution_dto_1.CreateContributionDto]),
@@ -46,23 +44,19 @@ __decorate([
 ], ContributionsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ContributionsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('/getContribution'),
-    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Query)('userid')),
-    __param(1, (0, common_1.Query)('agencyid')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ContributionsController.prototype, "getContributions", null);
 __decorate([
     (0, common_1.Patch)('updateContri/:id'),
-    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),

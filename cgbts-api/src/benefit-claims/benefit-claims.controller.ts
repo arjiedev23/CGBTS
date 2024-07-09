@@ -1,14 +1,12 @@
-import { Controller, Post, Body, UseGuards, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query } from '@nestjs/common';
 import { BenefitClaimsService } from './benefit-claims.service';
 import { CreateBenefitClaimDto } from './dto/create-benefit-claim.dto';
-import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('benefit-claims')
 export class BenefitClaimsController {
   constructor(private readonly benefitClaimsService: BenefitClaimsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   saveBenefits(@Body() createBenefitClaimDto: CreateBenefitClaimDto) {
     return this.benefitClaimsService.saveBenefitClaims(createBenefitClaimDto);
   }

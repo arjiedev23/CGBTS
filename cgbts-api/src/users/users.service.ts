@@ -51,10 +51,12 @@ export class UsersService {
         },
       });
 
-      if (checkUser.length != 0) {
+      console.log(checkUser);
+
+      if (checkUser.length === 0) {
         return {
           respCode: 0,
-          respMessage: 'Username already exist!',
+          respMessage: 'User does not exist!',
           user_id: createUserInfoDto.user_id,
         };
       }
@@ -107,14 +109,19 @@ export class UsersService {
 
   async updateUser(id: number, updateUserDto: UpdateUserDto) {
     try {
-      const update = await this.prismaService.users.update({
-        where: {
-          userID: id,
-        },
-        data: updateUserDto,
-      });
+      const update = await this.saveUserUpdate(id, updateUserDto);
 
-      return update;
+      console.log(update);
+
+      if (!update) {
+        return { respCode: 0, respMessage: 'Something went wrong!' };
+      }
+
+      return {
+        respCode: 1,
+        respMessage: 'User Successfully updated!',
+        updatedDetails: update,
+      };
     } catch (ex) {
       throw new Error(ex);
     }
@@ -122,6 +129,8 @@ export class UsersService {
 
   async saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any> {
     try {
+      const dob = new Date(createUserInfoDto.DOB);
+      createUserInfoDto.DOB = dob.toISOString();
       const saveInfo = await this.prismaService.user_info.create({
         data: {
           first_name: createUserInfoDto.first_name,
@@ -135,6 +144,34 @@ export class UsersService {
       });
 
       return saveInfo;
+    } catch (ex) {
+      throw new Error(ex);
+    }
+  }
+
+  async saveUserUpdate(user: number, data: UpdateUserDto): Promise<any> {
+    try {
+      const now = new Date();
+      const update = await this.prismaService.users.update({
+        where: {
+          userID: user,
+        },
+        data: {
+          address: data.address,
+          sex: data.sex,
+          province: data.province,
+          city_municipal: data.city_municipal,
+          barangay: data.barangay,
+          postal_code: data.postal_code,
+          country: data.country,
+          sss_id: data.sss_id,
+          pagibig_id: data.pagibig_id,
+          philhead_id: data.philhealth_id,
+          updated_at: now.toISOString(),
+        },
+      });
+
+      return update;
     } catch (ex) {
       throw new Error(ex);
     }

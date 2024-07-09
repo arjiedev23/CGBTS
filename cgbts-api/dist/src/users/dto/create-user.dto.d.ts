@@ -19,3 +19,13 @@ export declare class CreateUserDto {
     updated_at: Date;
     last_login: Date;
 }
+export declare class CreateUserInfoDto {
+    first_name: string;
+    middle_name: string;
+    last_name: string;
+    suffix: string;
+    DOB: string;
+    contact_number: string;
+    relationship: string;
+    user_id: number;
+}

@@ -34,11 +34,40 @@ let UsersService = class UsersService {
             }
             const res = await this.createData(createUserDto);
             if (!res) {
-                return { respCode: 0, respMessage: 'Something went wrong!' };
+                return { respCode: 0, respMessage: 'User does not exist!' };
             }
             return {
                 respCode: 1,
                 respMessage: 'User successfully added.',
+                data: res,
+            };
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async saveMoreInfo(createUserInfoDto) {
+        try {
+            const checkUser = await this.prismaService.users.findMany({
+                where: {
+                    userID: createUserInfoDto.user_id,
+                },
+            });
+            console.log(checkUser);
+            if (checkUser.length === 0) {
+                return {
+                    respCode: 0,
+                    respMessage: 'User does not exist!',
+                    user_id: createUserInfoDto.user_id,
+                };
+            }
+            const res = await this.saveUserInfo(createUserInfoDto);
+            if (!res) {
+                return { respCode: 0, respMessage: 'User does not exist!' };
+            }
+            return {
+                respCode: 1,
+                respMessage: 'User successfully updated!',
                 data: res,
             };
         }
@@ -52,6 +81,92 @@ let UsersService = class UsersService {
                 username: user,
             },
         });
+    }
+    async viewUsers() {
+        try {
+            const res = await this.prismaService.users.findMany();
+            return res;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async findAll() {
+        try {
+            const res = await this.viewUsers();
+            if ((await res).length === 0) {
+                return { respCode: 0, respMessage: 'No data found!' };
+            }
+            return { respCode: 1, respMessage: 'success', data: res };
+        }
+        catch (ex) {
+            throw new Error();
+        }
+    }
+    async updateUser(id, updateUserDto) {
+        try {
+            const update = await this.saveUserUpdate(id, updateUserDto);
+            console.log(update);
+            if (!update) {
+                return { respCode: 0, respMessage: 'Something went wrong!' };
+            }
+            return {
+                respCode: 1,
+                respMessage: 'User Successfully updated!',
+                updatedDetails: update,
+            };
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async saveUserInfo(createUserInfoDto) {
+        try {
+            const dob = new Date(createUserInfoDto.DOB);
+            createUserInfoDto.DOB = dob.toISOString();
+            const saveInfo = await this.prismaService.user_info.create({
+                data: {
+                    first_name: createUserInfoDto.first_name,
+                    last_name: createUserInfoDto.last_name,
+                    middle_name: createUserInfoDto.middle_name,
+                    suffix: createUserInfoDto.suffix,
+                    DOB: createUserInfoDto.DOB,
+                    relationship: createUserInfoDto.relationship,
+                    users_id: createUserInfoDto.user_id,
+                },
+            });
+            return saveInfo;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async saveUserUpdate(user, data) {
+        try {
+            const now = new Date();
+            const update = await this.prismaService.users.update({
+                where: {
+                    userID: user,
+                },
+                data: {
+                    address: data.address,
+                    sex: data.sex,
+                    province: data.province,
+                    city_municipal: data.city_municipal,
+                    barangay: data.barangay,
+                    postal_code: data.postal_code,
+                    country: data.country,
+                    sss_id: data.sss_id,
+                    pagibig_id: data.pagibig_id,
+                    philhead_id: data.philhealth_id,
+                    updated_at: now.toISOString(),
+                },
+            });
+            return update;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
     }
     async createData(data) {
         try {
@@ -79,40 +194,6 @@ let UsersService = class UsersService {
         }
         catch (error) {
             throw new Error(`Error creating data: ${error.message}`);
-        }
-    }
-    async viewUsers() {
-        try {
-            const res = await this.prismaService.users.findMany();
-            return res;
-        }
-        catch (ex) {
-            throw new Error(ex);
-        }
-    }
-    async findAll() {
-        try {
-            const res = await this.viewUsers();
-            if ((await res).length === 0) {
-                return { respCode: 0, respMessage: 'No data found!' };
-            }
-            return { respCode: 1, respMessage: 'success', data: res };
-        }
-        catch (ex) {
-            throw new Error();
-        }
-    }
-    async update(id, updateUserDto) {
-        try {
-            return await this.prismaService.users.update({
-                where: {
-                    userID: id,
-                },
-                data: updateUserDto,
-            });
-        }
-        catch (ex) {
-            throw new Error(ex);
         }
     }
 };

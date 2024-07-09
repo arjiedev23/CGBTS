@@ -1,5 +1,7 @@
 import { Prisma, Users } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserInfoDto } from './dto/create-user.dto';
 export declare class UsersService {
     private readonly prismaService;
     constructor(prismaService: PrismaService);
@@ -19,8 +21,23 @@ export declare class UsersService {
         data: any;
         username?: undefined;
     }>;
+    saveMoreInfo(createUserInfoDto: CreateUserInfoDto): Promise<{
+        respCode: number;
+        respMessage: string;
+        user_id: number;
+        data?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        user_id?: undefined;
+        data?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        data: any;
+        user_id?: undefined;
+    }>;
     findOne(user: string): Promise<Users>;
-    createData(data: Prisma.UsersCreateInput): Promise<any>;
     viewUsers(): Promise<{
         userID: number;
         username: string;
@@ -28,21 +45,25 @@ export declare class UsersService {
         email: string;
         phone_number: string;
         first_name: string;
-        middle_name: string;
+        middle_name: string | null;
         last_name: string;
         date_of_birth: Date;
-        address: string;
+        address: string | null;
         create_at: Date;
         updated_at: Date | null;
         status: string;
         last_login: Date | null;
-        sex: string;
-        barangay: string;
-        city_municipal: string;
-        postal_code: number;
-        country: string;
-        province: string;
-        role_Id: number;
+        suffix: string | null;
+        sex: string | null;
+        barangay: string | null;
+        city_municipal: string | null;
+        postal_code: number | null;
+        country: string | null;
+        province: string | null;
+        sss_id: string | null;
+        pagibig_id: string | null;
+        philhead_id: string | null;
+        role_Id: number | null;
     }[]>;
     findAll(): Promise<{
         respCode: number;
@@ -58,44 +79,37 @@ export declare class UsersService {
             email: string;
             phone_number: string;
             first_name: string;
-            middle_name: string;
+            middle_name: string | null;
             last_name: string;
             date_of_birth: Date;
-            address: string;
+            address: string | null;
             create_at: Date;
             updated_at: Date | null;
             status: string;
             last_login: Date | null;
-            sex: string;
-            barangay: string;
-            city_municipal: string;
-            postal_code: number;
-            country: string;
-            province: string;
-            role_Id: number;
+            suffix: string | null;
+            sex: string | null;
+            barangay: string | null;
+            city_municipal: string | null;
+            postal_code: number | null;
+            country: string | null;
+            province: string | null;
+            sss_id: string | null;
+            pagibig_id: string | null;
+            philhead_id: string | null;
+            role_Id: number | null;
         }[];
     }>;
-    update(id: number, updateUserDto: Prisma.UsersUpdateInput): Promise<{
-        userID: number;
-        username: string;
-        password: string;
-        email: string;
-        phone_number: string;
-        first_name: string;
-        middle_name: string;
-        last_name: string;
-        date_of_birth: Date;
-        address: string;
-        create_at: Date;
-        updated_at: Date | null;
-        status: string;
-        last_login: Date | null;
-        sex: string;
-        barangay: string;
-        city_municipal: string;
-        postal_code: number;
-        country: string;
-        province: string;
-        role_Id: number;
+    updateUser(id: number, updateUserDto: UpdateUserDto): Promise<{
+        respCode: number;
+        respMessage: string;
+        updatedDetails?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        updatedDetails: any;
     }>;
+    saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any>;
+    saveUserUpdate(user: number, data: UpdateUserDto): Promise<any>;
+    createData(data: Prisma.UsersCreateInput): Promise<any>;
 }
