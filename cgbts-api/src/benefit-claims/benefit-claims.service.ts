@@ -15,7 +15,7 @@ export class BenefitClaimsService {
 
       return {
         respCode: 1,
-        respMessage: 'Benefits claims successfully saved!',
+        respMessage: 'Benefit claims successfully saved!',
         claims: saveClaims,
       };
     } catch (ex) {

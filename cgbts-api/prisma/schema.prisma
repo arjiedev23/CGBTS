@@ -37,7 +37,7 @@ model Users {
   province       String?
   sss_id         String?
   pagibig_id     String?
-  philhead_id    String?
+  philhealth_id  String?
   role_Id        Int?             @default(1)
   contributions  contributions[]
   notifications  notifications[]
@@ -113,8 +113,8 @@ model faq {
   faq_id      Int           @id @default(autoincrement())
   question    String
   answer      String
-  category    faqs_category @relation(fields: [catefory_id], references: [faq_cateforyId])
-  catefory_id Int
+  category    faqs_category @relation(fields: [category_id], references: [faq_cateforyId])
+  category_id Int
 }
 
 model guides_tutorials {

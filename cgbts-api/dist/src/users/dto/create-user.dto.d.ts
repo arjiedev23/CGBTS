@@ -25,7 +25,11 @@ export declare class CreateUserInfoDto {
     last_name: string;
     suffix: string;
     DOB: string;
+<<<<<<< HEAD
     contact_number: number;
+=======
+    contact_number: string;
+>>>>>>> benefits-module
     relationship: string;
     user_id: number;
 }

@@ -101,6 +101,7 @@ export declare class UsersService {
         }[];
     }>;
     updateUser(id: number, updateUserDto: UpdateUserDto): Promise<{
+<<<<<<< HEAD
         userID: number;
         username: string;
         password: string;
@@ -128,5 +129,24 @@ export declare class UsersService {
         role_Id: number | null;
     }>;
     saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any>;
+=======
+        respCode: number;
+        respMessage: string;
+        agency: number;
+        updatedDetails?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        agency?: undefined;
+        updatedDetails?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        updatedDetails: any;
+        agency?: undefined;
+    }>;
+    saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any>;
+    saveUserUpdate(user: number, data: UpdateUserDto): Promise<any>;
+>>>>>>> benefits-module
     createData(data: Prisma.UsersCreateInput): Promise<any>;
 }

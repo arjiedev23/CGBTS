@@ -7,7 +7,11 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const httpAdapterHost = app.get(core_1.HttpAdapterHost);
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter(httpAdapterHost));
+<<<<<<< HEAD
     await app.listen(1434);
+=======
+    await app.listen(process.env.PORT);
+>>>>>>> benefits-module
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
