@@ -7,6 +7,7 @@ import { ContributionsModule } from './contributions/contributions.module';
 import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { BenefitClaimsModule } from './benefit-claims/benefit-claims.module';
+import { FaqModule } from './faq/faq.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { BenefitClaimsModule } from './benefit-claims/benefit-claims.module';
     AuthModule,
     DashboardModule,
     BenefitClaimsModule,
+    FaqModule,
   ],
   controllers: [AppController],
   providers: [AppService],

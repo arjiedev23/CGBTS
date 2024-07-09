@@ -124,9 +124,9 @@ let ContributionsService = class ContributionsService {
             const postMonth = getPostMonth.length;
             const contList = [];
             for (let i = 0; i <= postMonth - 1; i++) {
-                const sss = this.getUserContribution(userid, 2, getPostMonth[i]);
-                const pagibig = this.getUserContribution(userid, 3, getPostMonth[i]);
-                const philhealth = this.getUserContribution(userid, 4, getPostMonth[i]);
+                const sss = this.getUserContribution(userid, process.env.CGBTS_SSS, getPostMonth[i]);
+                const pagibig = this.getUserContribution(userid, process.env.CGBTS_PAGIBIG, getPostMonth[i]);
+                const philhealth = this.getUserContribution(userid, process.env.CGBTS_PHILHEALTH, getPostMonth[i]);
                 contList.push({
                     post_month: getPostMonth[i],
                     sss: await sss,
@@ -199,7 +199,7 @@ let ContributionsService = class ContributionsService {
             const userContri = await this.prismaService.contributions.findFirst({
                 where: {
                     userID: userId,
-                    agency_id: agency,
+                    agency_id: Number(agency),
                     post_date: {
                         gte: new Date(year, month - 1, 1),
                         lt: new Date(year, month, 1),
@@ -209,7 +209,7 @@ let ContributionsService = class ContributionsService {
                     amount: true,
                 },
             });
-            const res = userContri == null ? '0' : userContri.amount;
+            const res = userContri == null ? '' : userContri.amount;
             return res;
         }
         catch (err) {

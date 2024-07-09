@@ -44,5 +44,5 @@ export declare class ContributionsService {
         agency_id: number;
     }>;
     createContri(data: CreateContributionDto): Promise<any>;
-    getUserContribution(userId: number, agency: number, postDate: string): Promise<any>;
+    getUserContribution(userId: number, agency: string, postDate: string): Promise<any>;
 }

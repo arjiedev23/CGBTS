@@ -20,24 +20,42 @@ model Users {
   email          String
   phone_number   String
   first_name     String
-  middle_name    String
+  middle_name    String?
   last_name      String
   date_of_birth  DateTime
-  address        String
+  address        String?
   create_at      DateTime         @default(now())
   updated_at     DateTime?        @db.Timestamp(0)
-  status         String
+  status         String           @default("1")
   last_login     DateTime?        @db.Timestamp(0)
-  sex            String
-  barangay       String
-  city_municipal String
-  postal_code    Int
-  country        String
-  province       String
-  role_Id        Int              @default(1)
+  suffix         String?
+  sex            String?
+  barangay       String?
+  city_municipal String?
+  postal_code    Int?
+  country        String?
+  province       String?
+  sss_id         String?
+  pagibig_id     String?
+  philhead_id    String?
+  role_Id        Int?             @default(1)
   contributions  contributions[]
   notifications  notifications[]
   benefit_claims benefit_claims[]
+  user_info      user_info[]
+}
+
+model user_info {
+  id             Int      @id @default(autoincrement())
+  first_name     String
+  middle_name    String
+  last_name      String
+  suffix         String?
+  DOB            DateTime
+  relationship   String
+  contact_number String?
+  user           Users    @relation(fields: [users_id], references: [userID])
+  users_id       Int
 }
 
 model user_roles {
@@ -83,10 +101,38 @@ model benefit_claims {
   claim_amount Decimal
   claim_status String
   submitted_at DateTime           @default(now())
-  processed_ad DateTime           @db.Timestamp(0)
+  processed_ad DateTime?          @db.Timestamp(0)
   remarks      String
   users        Users              @relation(fields: [userID], references: [userID])
   agency       agency_information @relation(fields: [benefit_type], references: [agency_id])
   userID       Int
   benefit_type Int
+}
+
+model faq {
+  faq_id      Int           @id @default(autoincrement())
+  question    String
+  answer      String
+  category    faqs_category @relation(fields: [catefory_id], references: [faq_cateforyId])
+  catefory_id Int
+}
+
+model guides_tutorials {
+  guide_id Int    @id @default(autoincrement())
+  title    String
+  content  String
+  category String
+}
+
+model benefits_types {
+  btypes_id      Int    @id @default(autoincrement())
+  title          String
+  content        String
+  required_month Int
+}
+
+model faqs_category {
+  faq_cateforyId   Int    @id @default(autoincrement())
+  faq_categoryName String
+  faq              faq[]
 }

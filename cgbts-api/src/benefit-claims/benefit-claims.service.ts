@@ -1,26 +1,75 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBenefitClaimDto } from './dto/create-benefit-claim.dto';
-import { UpdateBenefitClaimDto } from './dto/update-benefit-claim.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class BenefitClaimsService {
-  create(createBenefitClaimDto: CreateBenefitClaimDto) {
-    return 'This action adds a new benefitClaim';
+  constructor(private readonly prismaService: PrismaService) {}
+  async saveBenefitClaims(createBenefitClaimDto: CreateBenefitClaimDto) {
+    try {
+      const saveClaims = this.createBenefitClaims(createBenefitClaimDto);
+
+      if (!saveClaims) {
+        return { respCode: 0, respMessage: 'Something went wrong!' };
+      }
+
+      return {
+        respCode: 1,
+        respMessage: 'Benefits claims successfully saved!',
+        claims: saveClaims,
+      };
+    } catch (ex) {
+      throw new Error(ex);
+    }
   }
 
-  findAll() {
-    return `This action returns all benefitClaims`;
+  async viewClaimDetails(claimid: number, userid: number) {
+    try {
+      const claims = this.viewBenefitsDetails(claimid, userid);
+
+      if (!claims) {
+        return { respCode: 0, respMessage: 'Something went wrong!' };
+      }
+
+      return { respCode: 1, respMessage: 'success', claimDetails: claims };
+    } catch (ex) {
+      throw new Error(ex);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} benefitClaim`;
+  async viewBenefitsDetails(claim_id: number, user_id: number): Promise<any> {
+    try {
+      return await this.prismaService.benefit_claims.findUnique({
+        where: {
+          claim_id: claim_id,
+          userID: user_id,
+        },
+        select: {
+          claim_amount: true,
+          claim_status: true,
+          remarks: true,
+        },
+      });
+    } catch (ex) {
+      throw new Error(ex);
+    }
   }
 
-  update(id: number, updateBenefitClaimDto: UpdateBenefitClaimDto) {
-    return `This action updates a #${id} benefitClaim`;
-  }
+  async createBenefitClaims(data: CreateBenefitClaimDto): Promise<any> {
+    try {
+      const saveClaims = await this.prismaService.benefit_claims.create({
+        data: {
+          claim_amount: data.claim_amount,
+          claim_status: data.claim_status,
+          remarks: data.remarks,
+          userID: data.user_id,
+          benefit_type: data.benefit_type,
+        },
+      });
 
-  remove(id: number) {
-    return `This action removes a #${id} benefitClaim`;
+      return saveClaims;
+    } catch (ex) {
+      throw new Error(ex);
+    }
   }
 }

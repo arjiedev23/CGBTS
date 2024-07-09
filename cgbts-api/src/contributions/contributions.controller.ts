@@ -24,22 +24,16 @@ export class ContributionsController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.contributionsService.contributionAll();
   }
 
   @Get('/getContribution')
-  @UseGuards(JwtAuthGuard)
-  getContributions(
-    @Query('userid') user: number,
-    @Query('agencyid') agency: number,
-  ) {
-    return this.contributionsService.getContributions(user, agency);
+  getContributions(@Query('userid') user: number) {
+    return this.contributionsService.getContributions(user);
   }
 
   @Patch('updateContri/:id')
-  @UseGuards(JwtAuthGuard)
   updateContri(
     @Param('id') id: string,
     @Body() updateContributionDto: UpdateContributionDto,
