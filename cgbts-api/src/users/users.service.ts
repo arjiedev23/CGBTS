@@ -52,8 +52,6 @@ export class UsersService {
         },
       });
 
-      console.log(checkUser);
-
       if (checkUser.length === 0) {
         return {
           respCode: 0,
@@ -132,7 +130,7 @@ export class UsersService {
 
       const checkPhilH = await this.prismaService.users.findMany({
         where: {
-          philhead_id: updateUserDto.philhealth_id,
+          philhealth_id: updateUserDto.philhealth_id,
         },
       });
 
@@ -171,6 +169,7 @@ export class UsersService {
           DOB: createUserInfoDto.DOB,
           relationship: createUserInfoDto.relationship,
           users_id: createUserInfoDto.user_id,
+          contact_number: createUserInfoDto.contact_number,
         },
       });
 
@@ -197,7 +196,7 @@ export class UsersService {
           country: data.country,
           sss_id: data.sss_id,
           pagibig_id: data.pagibig_id,
-          philhead_id: data.philhealth_id,
+          philhealth_id: data.philhealth_id,
           updated_at: now.toISOString(),
         },
       });

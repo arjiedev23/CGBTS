@@ -1,16 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBenefitClaimDto } from './dto/create-benefit-claim.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BenefitClaimsService {
   constructor(private readonly prismaService: PrismaService) {}
   async saveBenefitClaims(createBenefitClaimDto: CreateBenefitClaimDto) {
     try {
+      const checkContribution = await this.prismaService.contributions.findMany(
+        {
+          where: {
+            userID: createBenefitClaimDto.user_id,
+            agency_id: createBenefitClaimDto.agency_id,
+          },
+        },
+      );
+
+      const benefitType = await this.prismaService.benefits_types.findFirst({
+        where: {
+          btypes_id: createBenefitClaimDto.benefit_type,
+        },
+        select: {
+          required_month: true,
+        },
+      });
+
+      console.log(checkContribution.length + ' ' + benefitType.required_month);
+
+      if (checkContribution.length < benefitType.required_month) {
+        return {
+          respCode: 0,
+          respMessage:
+            'User has to paid at least ' +
+            benefitType.required_month +
+            ' month/s of contributions',
+        };
+      }
+
       const saveClaims = this.createBenefitClaims(createBenefitClaimDto);
 
       if (!saveClaims) {
-        return { respCode: 0, respMessage: 'Something went wrong!' };
+        return { respCode: 0, respMessage: 'createBenefitClaims save error' };
       }
 
       return {
@@ -19,7 +50,15 @@ export class BenefitClaimsService {
         claims: saveClaims,
       };
     } catch (ex) {
-      throw new Error(ex);
+      if (ex instanceof Prisma.PrismaClientKnownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientUnknownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientValidationError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else {
+        throw new Error(ex);
+      }
     }
   }
 
@@ -39,9 +78,8 @@ export class BenefitClaimsService {
 
   async viewBenefitsDetails(claim_id: number, user_id: number): Promise<any> {
     try {
-      return await this.prismaService.benefit_claims.findUnique({
+      return await this.prismaService.benefit_claims.findMany({
         where: {
-          claim_id: claim_id,
           userID: user_id,
         },
         select: {
@@ -63,7 +101,8 @@ export class BenefitClaimsService {
           claim_status: data.claim_status,
           remarks: data.remarks,
           userID: data.user_id,
-          benefit_type: data.benefit_type,
+          btype_id: data.benefit_type,
+          agency_id: data.agency_id,
         },
       });
 

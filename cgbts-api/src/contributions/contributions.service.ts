@@ -93,7 +93,15 @@ export class ContributionsService {
 
       const res = await this.userContributions(Number(user));
 
+      if (res === 404) {
+        return { respCode: 0, respMessage: 'User does not exist' };
+      }
+
       if (res === null) {
+        return { respCode: 0, respMessage: 'No existing contribution!' };
+      }
+
+      if (res.respCode === 30) {
         return { respCode: 0, respMessage: 'No existing contribution!' };
       }
 
@@ -105,7 +113,15 @@ export class ContributionsService {
         contributions: res,
       };
     } catch (ex) {
-      throw new Error(ex);
+      if (ex instanceof Prisma.PrismaClientKnownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientUnknownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientValidationError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else {
+        throw new Error(ex);
+      }
     }
   }
 
@@ -121,6 +137,13 @@ export class ContributionsService {
         },
       });
 
+      if (!hireDate) {
+        console.log('testing hire');
+        return 404;
+      }
+
+      console.log('test test test');
+
       const getPostMonth = getMonthsAndYears(hireDate.create_at.toString());
       const postMonth = getPostMonth.length;
       const data = await this.prismaService.contributions.findMany({
@@ -132,7 +155,7 @@ export class ContributionsService {
         },
       });
 
-      if (data.length == 0) {
+      if (data.length === 0) {
         return null;
       }
 
@@ -152,8 +175,13 @@ export class ContributionsService {
           process.env.CGBTS_PHILHEALTH,
           getPostMonth[i],
         );
+
+        const [monthStr, yearStr] = getPostMonth[i].split('/');
+        const postMonth = parseInt(monthStr, 10);
+        const postYear = parseInt(yearStr, 10);
+
         contList.push({
-          post_month: getPostMonth[i],
+          post_month: getMonthName(postMonth) + ' ' + postYear,
           sss: sss,
           pagibig: pagibig,
           philhealth: philhealth,
@@ -166,7 +194,15 @@ export class ContributionsService {
         contributions: contList,
       };
     } catch (ex) {
-      throw new Error();
+      if (ex instanceof Prisma.PrismaClientKnownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientUnknownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientValidationError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else {
+        throw new Error();
+      }
     }
   }
 
@@ -217,7 +253,6 @@ export class ContributionsService {
           notifications: true,
         },
       });
-
       return addContri;
     } catch (err) {
       throw new Error(err);

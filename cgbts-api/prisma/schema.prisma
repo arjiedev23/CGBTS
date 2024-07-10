@@ -97,16 +97,18 @@ model notifications {
 }
 
 model benefit_claims {
-  claim_id     Int                @id @default(autoincrement())
-  claim_amount Decimal
-  claim_status String
-  submitted_at DateTime           @default(now())
-  processed_ad DateTime?          @db.Timestamp(0)
-  remarks      String
-  users        Users              @relation(fields: [userID], references: [userID])
-  agency       agency_information @relation(fields: [benefit_type], references: [agency_id])
-  userID       Int
-  benefit_type Int
+  claim_id      Int                @id @default(autoincrement())
+  claim_amount  Decimal
+  claim_status  String
+  submitted_at  DateTime           @default(now())
+  processed_ad  DateTime?          @db.Timestamp(0)
+  remarks       String
+  users         Users              @relation(fields: [userID], references: [userID])
+  agency        agency_information @relation(fields: [agency_id], references: [agency_id])
+  benefits_type benefits_types     @relation(fields: [btype_id], references: [btypes_id])
+  userID        Int
+  agency_id     Int
+  btype_id      Int
 }
 
 model faq {
@@ -125,10 +127,11 @@ model guides_tutorials {
 }
 
 model benefits_types {
-  btypes_id      Int    @id @default(autoincrement())
+  btypes_id      Int              @id @default(autoincrement())
   title          String
   content        String
   required_month Int
+  benefit_claims benefit_claims[]
 }
 
 model faqs_category {

@@ -6,4 +6,5 @@ export class CreateBenefitClaimDto {
   remarks: string;
   user_id: number;
   benefit_type: number;
+  agency_id: number;
 }

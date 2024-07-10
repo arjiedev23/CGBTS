@@ -53,18 +53,10 @@ let UsersService = class UsersService {
                     userID: createUserInfoDto.user_id,
                 },
             });
-<<<<<<< HEAD
-            if (checkUser.length != 0) {
-                return {
-                    respCode: 0,
-                    respMessage: 'Username already exist!',
-=======
-            console.log(checkUser);
             if (checkUser.length === 0) {
                 return {
                     respCode: 0,
                     respMessage: 'User does not exist!',
->>>>>>> benefits-module
                     user_id: createUserInfoDto.user_id,
                 };
             }
@@ -112,15 +104,6 @@ let UsersService = class UsersService {
     }
     async updateUser(id, updateUserDto) {
         try {
-<<<<<<< HEAD
-            const update = await this.prismaService.users.update({
-                where: {
-                    userID: id,
-                },
-                data: updateUserDto,
-            });
-            return update;
-=======
             const checkSSS = await this.prismaService.users.findMany({
                 where: {
                     sss_id: updateUserDto.sss_id,
@@ -139,7 +122,7 @@ let UsersService = class UsersService {
             }
             const checkPhilH = await this.prismaService.users.findMany({
                 where: {
-                    philhead_id: updateUserDto.philhealth_id,
+                    philhealth_id: updateUserDto.philhealth_id,
                 },
             });
             if (checkPhilH.length != 0) {
@@ -155,7 +138,6 @@ let UsersService = class UsersService {
                 respMessage: 'User Successfully updated!',
                 updatedDetails: update,
             };
->>>>>>> benefits-module
         }
         catch (ex) {
             throw new Error(ex);
@@ -163,11 +145,8 @@ let UsersService = class UsersService {
     }
     async saveUserInfo(createUserInfoDto) {
         try {
-<<<<<<< HEAD
-=======
             const dob = new Date(createUserInfoDto.DOB);
             createUserInfoDto.DOB = dob.toISOString();
->>>>>>> benefits-module
             const saveInfo = await this.prismaService.user_info.create({
                 data: {
                     first_name: createUserInfoDto.first_name,
@@ -177,6 +156,7 @@ let UsersService = class UsersService {
                     DOB: createUserInfoDto.DOB,
                     relationship: createUserInfoDto.relationship,
                     users_id: createUserInfoDto.user_id,
+                    contact_number: createUserInfoDto.contact_number,
                 },
             });
             return saveInfo;
@@ -185,8 +165,6 @@ let UsersService = class UsersService {
             throw new Error(ex);
         }
     }
-<<<<<<< HEAD
-=======
     async saveUserUpdate(user, data) {
         try {
             const now = new Date();
@@ -204,7 +182,7 @@ let UsersService = class UsersService {
                     country: data.country,
                     sss_id: data.sss_id,
                     pagibig_id: data.pagibig_id,
-                    philhead_id: data.philhealth_id,
+                    philhealth_id: data.philhealth_id,
                     updated_at: now.toISOString(),
                 },
             });
@@ -214,7 +192,6 @@ let UsersService = class UsersService {
             throw new Error(ex);
         }
     }
->>>>>>> benefits-module
     async createData(data) {
         try {
             const createdData = await this.prismaService.users.create({
@@ -222,37 +199,18 @@ let UsersService = class UsersService {
                     first_name: data.first_name,
                     last_name: data.last_name,
                     middle_name: data.middle_name,
-<<<<<<< HEAD
-                    address: data.address,
-=======
->>>>>>> benefits-module
                     sex: data.sex,
                     date_of_birth: data.date_of_birth,
                     email: data.email,
                     phone_number: data.phone_number,
-<<<<<<< HEAD
-                    password: data.phone_number,
-                    username: data.username,
-                    province: data.province,
-                    city_municipal: data.city_municipal,
-                    barangay: data.barangay,
-                    postal_code: data.postal_code,
-                    country: data.country,
-                    status: data.status,
-=======
                     password: data.password,
                     username: data.username,
->>>>>>> benefits-module
                 },
             });
             return createdData;
         }
         catch (error) {
-<<<<<<< HEAD
-            throw new Error(`Error creating data: ${error.message}`);
-=======
             throw new Error(error.message);
->>>>>>> benefits-module
         }
     }
 };

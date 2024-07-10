@@ -30,7 +30,7 @@ export declare class JwtStrategy extends JwtStrategy_base {
         province: string | null;
         sss_id: string | null;
         pagibig_id: string | null;
-        philhead_id: string | null;
+        philhealth_id: string | null;
         role_Id: number | null;
     }>;
 }

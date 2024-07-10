@@ -27,12 +27,21 @@ export declare class ContributionsController {
         respMesssage?: undefined;
         totalContributions?: undefined;
         contributions?: undefined;
+        errorType?: undefined;
     } | {
         respCode: number;
         respMesssage: string;
         totalContributions: any;
         contributions: any;
         respMessage?: undefined;
+        errorType?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        errorType: string;
+        respMesssage?: undefined;
+        totalContributions?: undefined;
+        contributions?: undefined;
     }>;
     updateContri(id: string, updateContributionDto: UpdateContributionDto): Promise<{
         contribution_id: number;
