@@ -48,6 +48,7 @@ let UsersService = class UsersService {
     }
     async saveMoreInfo(createUserInfoDto) {
         try {
+<<<<<<< HEAD
             const checkUser = await this.prismaService.users.findMany({
                 where: {
                     userID: createUserInfoDto.user_id,
@@ -55,6 +56,10 @@ let UsersService = class UsersService {
             });
             console.log(checkUser);
             if (checkUser.length === 0) {
+=======
+            const checkUser = await this.findUser(createUserInfoDto.user_id);
+            if (!checkUser) {
+>>>>>>> info-resources-module
                 return {
                     respCode: 0,
                     respMessage: 'User does not exist!',
@@ -75,12 +80,31 @@ let UsersService = class UsersService {
             throw new Error(ex);
         }
     }
-    async findOne(user) {
-        return await this.prismaService.users.findFirst({
-            where: {
-                username: user,
-            },
-        });
+    async findUser(user) {
+        try {
+            const userCheck = this.prismaService.users.findFirst({
+                where: {
+                    userID: user,
+                },
+            });
+            return userCheck;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async findAgency(agencyId) {
+        try {
+            const agency = this.prismaService.agency_information.findUnique({
+                where: {
+                    agency_id: agencyId,
+                },
+            });
+            return agency;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
     }
     async viewUsers() {
         try {
@@ -123,7 +147,7 @@ let UsersService = class UsersService {
             }
             const checkPhilH = await this.prismaService.users.findMany({
                 where: {
-                    philhead_id: updateUserDto.philhealth_id,
+                    philhealth_id: updateUserDto.philhealth_id,
                 },
             });
             if (checkPhilH.length != 0) {
@@ -157,6 +181,7 @@ let UsersService = class UsersService {
                     DOB: createUserInfoDto.DOB,
                     relationship: createUserInfoDto.relationship,
                     users_id: createUserInfoDto.user_id,
+                    contact_number: createUserInfoDto.contact_number,
                 },
             });
             return saveInfo;
@@ -182,7 +207,7 @@ let UsersService = class UsersService {
                     country: data.country,
                     sss_id: data.sss_id,
                     pagibig_id: data.pagibig_id,
-                    philhead_id: data.philhealth_id,
+                    philhealth_id: data.philhealth_id,
                     updated_at: now.toISOString(),
                 },
             });

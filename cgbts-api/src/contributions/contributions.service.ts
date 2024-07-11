@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { CreateContributionDto } from './dto/create-contribution.dto';
+import { UtilityService } from 'src/utility/utility.service';
 
 interface contribution {
   post_month: string;
@@ -13,21 +14,19 @@ interface contribution {
 
 @Injectable()
 export class ContributionsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly utilityService: UtilityService,
+  ) {}
   async createContribution(createContributionDto: CreateContributionDto) {
     try {
-      const checkUser = await this.prismaService.users.findUnique({
-        where: {
-          userID: createContributionDto.userID,
-        },
-      });
+      const checkUser = await this.utilityService.findUser(
+        createContributionDto.userID,
+      );
 
-      const checkAgency =
-        await this.prismaService.agency_information.findUnique({
-          where: {
-            agency_id: createContributionDto.agency_id,
-          },
-        });
+      const checkAgency = await this.utilityService.findAgency(
+        createContributionDto.agency_id,
+      );
 
       if (!checkAgency) {
         return { respCode: 0, respMessage: 'Agency not found!' };
@@ -93,7 +92,15 @@ export class ContributionsService {
 
       const res = await this.userContributions(Number(user));
 
+      if (res === 404) {
+        return { respCode: 0, respMessage: 'User does not exist' };
+      }
+
       if (res === null) {
+        return { respCode: 0, respMessage: 'No existing contribution!' };
+      }
+
+      if (res.respCode === 30) {
         return { respCode: 0, respMessage: 'No existing contribution!' };
       }
 
@@ -105,23 +112,54 @@ export class ContributionsService {
         contributions: res,
       };
     } catch (ex) {
-      throw new Error(ex);
+      if (ex instanceof Prisma.PrismaClientKnownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientUnknownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientValidationError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else {
+        throw new Error(ex);
+      }
     }
   }
 
   async userContributions(userid: number): Promise<any> {
     try {
+      let sssTotal = 0;
+      let pagibigTotal = 0;
+      let philhealthTotal = 0;
       const contList: contribution[] = [];
-      const hireDate = await this.prismaService.users.findUnique({
+      const hireDate = await this.prismaService.contributions.findFirst({
         where: {
           userID: userid,
         },
         select: {
-          create_at: true,
+          post_date: true,
+        },
+        orderBy: {
+          post_date: 'asc',
         },
       });
 
-      const getPostMonth = getMonthsAndYears(hireDate.create_at.toString());
+      if (!hireDate) {
+        return 404;
+      }
+
+      const latestSSS = await this.getLastUpdate(
+        userid,
+        Number(process.env.CGBTS_SSS),
+      );
+      const latestPagibig = await this.getLastUpdate(
+        userid,
+        Number(process.env.CGBTS_PAGIBIG),
+      );
+      const latestPhilhealth = await this.getLastUpdate(
+        userid,
+        Number(process.env.CGBTS_PHILHEALTH),
+      );
+
+      const getPostMonth = getMonthsAndYears(hireDate.post_date.toString());
       const postMonth = getPostMonth.length;
       const data = await this.prismaService.contributions.findMany({
         where: {
@@ -132,7 +170,7 @@ export class ContributionsService {
         },
       });
 
-      if (data.length == 0) {
+      if (data.length === 0) {
         return null;
       }
 
@@ -152,21 +190,51 @@ export class ContributionsService {
           process.env.CGBTS_PHILHEALTH,
           getPostMonth[i],
         );
+        sssTotal = sssTotal + Number(sss);
+        pagibigTotal = pagibigTotal + Number(pagibig);
+        philhealthTotal = philhealthTotal + Number(philhealth);
+
+        const totalContri = Number(sss) + Number(pagibig) + Number(philhealth);
+
+        const [monthStr, yearStr] = getPostMonth[i].split('/');
+        const postMonth = parseInt(monthStr, 10);
+        const postYear = parseInt(yearStr, 10);
+
         contList.push({
-          post_month: getPostMonth[i],
+          post_month: getMonthName(postMonth) + ' ' + postYear,
           sss: sss,
           pagibig: pagibig,
           philhealth: philhealth,
-          totalContribution: Number(sss) + Number(pagibig) + Number(philhealth),
+          totalContribution: totalContri,
         });
       }
 
       return {
+        sss: {
+          total: sssTotal,
+          lastUpdate: latestSSS.post_date,
+        },
+        pagibig: {
+          total: pagibigTotal,
+          lastUpdate: latestPagibig.post_date,
+        },
+        philhealth: {
+          total: philhealthTotal,
+          lastUpdate: latestPhilhealth.post_date,
+        },
         totalContributions: data.length,
         contributions: contList,
       };
     } catch (ex) {
-      throw new Error();
+      if (ex instanceof Prisma.PrismaClientKnownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientUnknownRequestError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else if (ex instanceof Prisma.PrismaClientValidationError) {
+        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
+      } else {
+        throw new Error();
+      }
     }
   }
 
@@ -183,6 +251,27 @@ export class ContributionsService {
       });
     } catch (ex) {
       throw new Error(ex);
+    }
+  }
+
+  async getLastUpdate(userId: number, agencyId: number): Promise<any> {
+    try {
+      const update = this.prismaService.contributions.findFirst({
+        where: {
+          userID: userId,
+          agency_id: agencyId,
+        },
+        select: {
+          post_date: true,
+        },
+        orderBy: {
+          post_date: 'desc',
+        },
+      });
+
+      return update;
+    } catch (ex) {
+      throw new Error();
     }
   }
 
@@ -210,6 +299,7 @@ export class ContributionsService {
                 ' has been posted',
               is_read: 0,
               user_id: data.userID,
+              agency_id: data.agency_id,
             },
           },
         },
@@ -217,7 +307,6 @@ export class ContributionsService {
           notifications: true,
         },
       });
-
       return addContri;
     } catch (err) {
       throw new Error(err);

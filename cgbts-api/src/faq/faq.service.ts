@@ -8,22 +8,32 @@ export class FaqService {
   constructor(private readonly prismaService: PrismaService) {}
   async saveFaq(createFaqDto: CreateFaqDto) {
     try {
-      const save = await this.prismaService.faq.create({
-        data: createFaqDto,
-      });
+      const save = await this.faq(createFaqDto);
 
-      return save;
+      if (!save) {
+        return { respCode: 0, respMessage: 'Save Error!' };
+      }
+
+      return { respCode: 1, respMessage: 'FAQ saved!', FAQ: save };
     } catch (ex) {
       throw new Error(ex);
     }
   }
 
-  findAll() {
-    return `This action returns all faq`;
-  }
+  async faq(data: CreateFaqDto): Promise<any> {
+    try {
+      const saveFaq = this.prismaService.faq.create({
+        data: {
+          question: data.question,
+          answer: data.answer,
+          category_id: data.category_id,
+        },
+      });
 
-  findOne(id: number) {
-    return `This action returns a #${id} faq`;
+      return saveFaq;
+    } catch (ex) {
+      throw new Error(ex);
+    }
   }
 
   async update(id: number, updateFaqDto: UpdateFaqDto) {
@@ -31,9 +41,5 @@ export class FaqService {
       where: { faq_id: id },
       data: updateFaqDto,
     });
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} faq`;
   }
 }

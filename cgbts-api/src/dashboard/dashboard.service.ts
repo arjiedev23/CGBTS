@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class DashboardService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly userService: UsersService,
+  ) {}
 
   async notification(user: number) {
     try {
-      const res = await this.prismaService.notifications.findMany({
-        where: {
-          user_id: user,
-          is_read: 0,
-        },
-        select: {
-          message: true,
-        },
-      });
+      const res = await this.notif(user);
 
-      return res;
+      const checkUser = await this.userService.findUser(user);
+
+      if (!checkUser) {
+        return { respCode: 0, respMessage: 'User does not exist!' };
+      }
+
+      return { respCode: 1, respMessage: 'success', notifications: res };
     } catch (ex) {
       throw new Error(ex);
     }
@@ -37,6 +39,29 @@ export class DashboardService {
       return res;
     } catch (ex) {
       throw new Error();
+    }
+  }
+
+  async notif(user_id: number): Promise<any> {
+    try {
+      const res = this.prismaService.notifications.findMany({
+        where: {
+          user_id: user_id,
+          is_read: 0,
+        },
+        include: {
+          agency: {
+            select: {
+              agency_id: true,
+              agency_name: true,
+            },
+          },
+        },
+      });
+
+      return res;
+    } catch (ex) {
+      throw new Error(ex);
     }
   }
 }

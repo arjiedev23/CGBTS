@@ -1,9 +1,11 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { CreateContributionDto } from './dto/create-contribution.dto';
+import { UtilityService } from 'src/utility/utility.service';
 export declare class ContributionsService {
     private readonly prismaService;
-    constructor(prismaService: PrismaService);
+    private readonly utilityService;
+    constructor(prismaService: PrismaService, utilityService: UtilityService);
     createContribution(createContributionDto: CreateContributionDto): Promise<{
         respCode: number;
         respMessage: string;
@@ -27,12 +29,21 @@ export declare class ContributionsService {
         respMesssage?: undefined;
         totalContributions?: undefined;
         contributions?: undefined;
+        errorType?: undefined;
     } | {
         respCode: number;
         respMesssage: string;
         totalContributions: any;
         contributions: any;
         respMessage?: undefined;
+        errorType?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        errorType: string;
+        respMesssage?: undefined;
+        totalContributions?: undefined;
+        contributions?: undefined;
     }>;
     userContributions(userid: number): Promise<any>;
     updateContri(id: number, updateContributionDto: Prisma.contributionsUpdateInput): Promise<{
@@ -43,6 +54,7 @@ export declare class ContributionsService {
         userID: number;
         agency_id: number;
     }>;
+    getLastUpdate(userId: number, agencyId: number): Promise<any>;
     createContri(data: CreateContributionDto): Promise<any>;
     getUserContribution(userId: number, agency: string, postDate: string): Promise<any>;
 }
