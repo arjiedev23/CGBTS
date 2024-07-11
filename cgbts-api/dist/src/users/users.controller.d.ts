@@ -42,6 +42,7 @@ export declare class UsersController {
             updated_at: Date | null;
             status: string;
             last_login: Date | null;
+            workStartDate: Date | null;
             suffix: string | null;
             sex: string | null;
             barangay: string | null;

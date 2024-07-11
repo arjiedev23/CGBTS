@@ -1,4 +1,4 @@
-import { Prisma, Users } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserInfoDto } from './dto/create-user.dto';
@@ -37,7 +37,8 @@ export declare class UsersService {
         data: any;
         user_id?: undefined;
     }>;
-    findOne(user: string): Promise<Users>;
+    findUser(user: number): Promise<any>;
+    findAgency(agencyId: number): Promise<any>;
     viewUsers(): Promise<{
         userID: number;
         username: string;
@@ -53,6 +54,7 @@ export declare class UsersService {
         updated_at: Date | null;
         status: string;
         last_login: Date | null;
+        workStartDate: Date | null;
         suffix: string | null;
         sex: string | null;
         barangay: string | null;
@@ -87,6 +89,7 @@ export declare class UsersService {
             updated_at: Date | null;
             status: string;
             last_login: Date | null;
+            workStartDate: Date | null;
             suffix: string | null;
             sex: string | null;
             barangay: string | null;

@@ -21,6 +21,7 @@ export declare class JwtStrategy extends JwtStrategy_base {
         updated_at: Date | null;
         status: string;
         last_login: Date | null;
+        workStartDate: Date | null;
         suffix: string | null;
         sex: string | null;
         barangay: string | null;

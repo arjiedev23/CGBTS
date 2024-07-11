@@ -98,7 +98,6 @@ export class BenefitClaimsService {
       const saveClaims = await this.prismaService.benefit_claims.create({
         data: {
           claim_amount: data.claim_amount,
-          claim_status: data.claim_status,
           remarks: data.remarks,
           userID: data.user_id,
           btype_id: data.benefit_type,

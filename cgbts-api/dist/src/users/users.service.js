@@ -48,12 +48,8 @@ let UsersService = class UsersService {
     }
     async saveMoreInfo(createUserInfoDto) {
         try {
-            const checkUser = await this.prismaService.users.findMany({
-                where: {
-                    userID: createUserInfoDto.user_id,
-                },
-            });
-            if (checkUser.length === 0) {
+            const checkUser = await this.findUser(createUserInfoDto.user_id);
+            if (!checkUser) {
                 return {
                     respCode: 0,
                     respMessage: 'User does not exist!',
@@ -74,12 +70,31 @@ let UsersService = class UsersService {
             throw new Error(ex);
         }
     }
-    async findOne(user) {
-        return await this.prismaService.users.findFirst({
-            where: {
-                username: user,
-            },
-        });
+    async findUser(user) {
+        try {
+            const userCheck = this.prismaService.users.findFirst({
+                where: {
+                    userID: user,
+                },
+            });
+            return userCheck;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async findAgency(agencyId) {
+        try {
+            const agency = this.prismaService.agency_information.findUnique({
+                where: {
+                    agency_id: agencyId,
+                },
+            });
+            return agency;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
     }
     async viewUsers() {
         try {

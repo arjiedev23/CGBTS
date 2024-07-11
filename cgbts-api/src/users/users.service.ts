@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Users } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserInfoDto } from './dto/create-user.dto';
-import { agent } from 'supertest';
+import { CreateUserDto, CreateUserInfoDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -46,13 +45,9 @@ export class UsersService {
 
   async saveMoreInfo(createUserInfoDto: CreateUserInfoDto) {
     try {
-      const checkUser = await this.prismaService.users.findMany({
-        where: {
-          userID: createUserInfoDto.user_id,
-        },
-      });
+      const checkUser = await this.findUser(createUserInfoDto.user_id);
 
-      if (checkUser.length === 0) {
+      if (!checkUser) {
         return {
           respCode: 0,
           respMessage: 'User does not exist!',
@@ -76,12 +71,32 @@ export class UsersService {
     }
   }
 
-  async findOne(user: string): Promise<Users> {
-    return await this.prismaService.users.findFirst({
-      where: {
-        username: user,
-      },
-    });
+  async findUser(user: number): Promise<any> {
+    try {
+      const userCheck = this.prismaService.users.findFirst({
+        where: {
+          userID: user,
+        },
+      });
+
+      return userCheck;
+    } catch (ex) {
+      throw new Error(ex);
+    }
+  }
+
+  async findAgency(agencyId: number): Promise<any> {
+    try {
+      const agency = this.prismaService.agency_information.findUnique({
+        where: {
+          agency_id: agencyId,
+        },
+      });
+
+      return agency;
+    } catch (ex) {
+      throw new Error(ex);
+    }
   }
 
   async viewUsers() {

@@ -13,22 +13,16 @@ exports.ContributionsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
+const utility_service_1 = require("../utility/utility.service");
 let ContributionsService = class ContributionsService {
-    constructor(prismaService) {
+    constructor(prismaService, utilityService) {
         this.prismaService = prismaService;
+        this.utilityService = utilityService;
     }
     async createContribution(createContributionDto) {
         try {
-            const checkUser = await this.prismaService.users.findUnique({
-                where: {
-                    userID: createContributionDto.userID,
-                },
-            });
-            const checkAgency = await this.prismaService.agency_information.findUnique({
-                where: {
-                    agency_id: createContributionDto.agency_id,
-                },
-            });
+            const checkUser = await this.utilityService.findUser(createContributionDto.userID);
+            const checkAgency = await this.utilityService.findAgency(createContributionDto.agency_id);
             if (!checkAgency) {
                 return { respCode: 0, respMessage: 'Agency not found!' };
             }
@@ -119,21 +113,28 @@ let ContributionsService = class ContributionsService {
     }
     async userContributions(userid) {
         try {
+            let sssTotal = 0;
+            let pagibigTotal = 0;
+            let philhealthTotal = 0;
             const contList = [];
-            const hireDate = await this.prismaService.users.findUnique({
+            const hireDate = await this.prismaService.contributions.findFirst({
                 where: {
                     userID: userid,
                 },
                 select: {
-                    create_at: true,
+                    post_date: true,
+                },
+                orderBy: {
+                    post_date: 'asc',
                 },
             });
             if (!hireDate) {
-                console.log('testing hire');
                 return 404;
             }
-            console.log('test test test');
-            const getPostMonth = getMonthsAndYears(hireDate.create_at.toString());
+            const latestSSS = await this.getLastUpdate(userid, Number(process.env.CGBTS_SSS));
+            const latestPagibig = await this.getLastUpdate(userid, Number(process.env.CGBTS_PAGIBIG));
+            const latestPhilhealth = await this.getLastUpdate(userid, Number(process.env.CGBTS_PHILHEALTH));
+            const getPostMonth = getMonthsAndYears(hireDate.post_date.toString());
             const postMonth = getPostMonth.length;
             const data = await this.prismaService.contributions.findMany({
                 where: {
@@ -150,6 +151,10 @@ let ContributionsService = class ContributionsService {
                 const sss = await this.getUserContribution(userid, process.env.CGBTS_SSS, getPostMonth[i]);
                 const pagibig = await this.getUserContribution(userid, process.env.CGBTS_PAGIBIG, getPostMonth[i]);
                 const philhealth = await this.getUserContribution(userid, process.env.CGBTS_PHILHEALTH, getPostMonth[i]);
+                sssTotal = sssTotal + Number(sss);
+                pagibigTotal = pagibigTotal + Number(pagibig);
+                philhealthTotal = philhealthTotal + Number(philhealth);
+                const totalContri = Number(sss) + Number(pagibig) + Number(philhealth);
                 const [monthStr, yearStr] = getPostMonth[i].split('/');
                 const postMonth = parseInt(monthStr, 10);
                 const postYear = parseInt(yearStr, 10);
@@ -158,10 +163,22 @@ let ContributionsService = class ContributionsService {
                     sss: sss,
                     pagibig: pagibig,
                     philhealth: philhealth,
-                    totalContribution: Number(sss) + Number(pagibig) + Number(philhealth),
+                    totalContribution: totalContri,
                 });
             }
             return {
+                sss: {
+                    total: sssTotal,
+                    lastUpdate: latestSSS.post_date,
+                },
+                pagibig: {
+                    total: pagibigTotal,
+                    lastUpdate: latestPagibig.post_date,
+                },
+                philhealth: {
+                    total: philhealthTotal,
+                    lastUpdate: latestPhilhealth.post_date,
+                },
                 totalContributions: data.length,
                 contributions: contList,
             };
@@ -194,6 +211,26 @@ let ContributionsService = class ContributionsService {
             throw new Error(ex);
         }
     }
+    async getLastUpdate(userId, agencyId) {
+        try {
+            const update = this.prismaService.contributions.findFirst({
+                where: {
+                    userID: userId,
+                    agency_id: agencyId,
+                },
+                select: {
+                    post_date: true,
+                },
+                orderBy: {
+                    post_date: 'desc',
+                },
+            });
+            return update;
+        }
+        catch (ex) {
+            throw new Error();
+        }
+    }
     async createContri(data) {
         try {
             const pDate = data.post_date.toISOString();
@@ -216,6 +253,7 @@ let ContributionsService = class ContributionsService {
                                 ' has been posted',
                             is_read: 0,
                             user_id: data.userID,
+                            agency_id: data.agency_id,
                         },
                     },
                 },
@@ -259,7 +297,8 @@ let ContributionsService = class ContributionsService {
 exports.ContributionsService = ContributionsService;
 exports.ContributionsService = ContributionsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        utility_service_1.UtilityService])
 ], ContributionsService);
 const getMonthsAndYears = (givenDateTime) => {
     const createdDate = new Date(givenDateTime);

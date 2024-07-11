@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { CreateContributionDto } from './dto/create-contribution.dto';
+import { UtilityService } from 'src/utility/utility.service';
 
 interface contribution {
   post_month: string;
@@ -13,21 +14,19 @@ interface contribution {
 
 @Injectable()
 export class ContributionsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly utilityService: UtilityService,
+  ) {}
   async createContribution(createContributionDto: CreateContributionDto) {
     try {
-      const checkUser = await this.prismaService.users.findUnique({
-        where: {
-          userID: createContributionDto.userID,
-        },
-      });
+      const checkUser = await this.utilityService.findUser(
+        createContributionDto.userID,
+      );
 
-      const checkAgency =
-        await this.prismaService.agency_information.findUnique({
-          where: {
-            agency_id: createContributionDto.agency_id,
-          },
-        });
+      const checkAgency = await this.utilityService.findAgency(
+        createContributionDto.agency_id,
+      );
 
       if (!checkAgency) {
         return { respCode: 0, respMessage: 'Agency not found!' };
@@ -127,24 +126,40 @@ export class ContributionsService {
 
   async userContributions(userid: number): Promise<any> {
     try {
+      let sssTotal = 0;
+      let pagibigTotal = 0;
+      let philhealthTotal = 0;
       const contList: contribution[] = [];
-      const hireDate = await this.prismaService.users.findUnique({
+      const hireDate = await this.prismaService.contributions.findFirst({
         where: {
           userID: userid,
         },
         select: {
-          create_at: true,
+          post_date: true,
+        },
+        orderBy: {
+          post_date: 'asc',
         },
       });
 
       if (!hireDate) {
-        console.log('testing hire');
         return 404;
       }
 
-      console.log('test test test');
+      const latestSSS = await this.getLastUpdate(
+        userid,
+        Number(process.env.CGBTS_SSS),
+      );
+      const latestPagibig = await this.getLastUpdate(
+        userid,
+        Number(process.env.CGBTS_PAGIBIG),
+      );
+      const latestPhilhealth = await this.getLastUpdate(
+        userid,
+        Number(process.env.CGBTS_PHILHEALTH),
+      );
 
-      const getPostMonth = getMonthsAndYears(hireDate.create_at.toString());
+      const getPostMonth = getMonthsAndYears(hireDate.post_date.toString());
       const postMonth = getPostMonth.length;
       const data = await this.prismaService.contributions.findMany({
         where: {
@@ -175,6 +190,11 @@ export class ContributionsService {
           process.env.CGBTS_PHILHEALTH,
           getPostMonth[i],
         );
+        sssTotal = sssTotal + Number(sss);
+        pagibigTotal = pagibigTotal + Number(pagibig);
+        philhealthTotal = philhealthTotal + Number(philhealth);
+
+        const totalContri = Number(sss) + Number(pagibig) + Number(philhealth);
 
         const [monthStr, yearStr] = getPostMonth[i].split('/');
         const postMonth = parseInt(monthStr, 10);
@@ -185,11 +205,23 @@ export class ContributionsService {
           sss: sss,
           pagibig: pagibig,
           philhealth: philhealth,
-          totalContribution: Number(sss) + Number(pagibig) + Number(philhealth),
+          totalContribution: totalContri,
         });
       }
 
       return {
+        sss: {
+          total: sssTotal,
+          lastUpdate: latestSSS.post_date,
+        },
+        pagibig: {
+          total: pagibigTotal,
+          lastUpdate: latestPagibig.post_date,
+        },
+        philhealth: {
+          total: philhealthTotal,
+          lastUpdate: latestPhilhealth.post_date,
+        },
         totalContributions: data.length,
         contributions: contList,
       };
@@ -222,6 +254,27 @@ export class ContributionsService {
     }
   }
 
+  async getLastUpdate(userId: number, agencyId: number): Promise<any> {
+    try {
+      const update = this.prismaService.contributions.findFirst({
+        where: {
+          userID: userId,
+          agency_id: agencyId,
+        },
+        select: {
+          post_date: true,
+        },
+        orderBy: {
+          post_date: 'desc',
+        },
+      });
+
+      return update;
+    } catch (ex) {
+      throw new Error();
+    }
+  }
+
   async createContri(data: CreateContributionDto): Promise<any> {
     try {
       const pDate = data.post_date.toISOString();
@@ -246,6 +299,7 @@ export class ContributionsService {
                 ' has been posted',
               is_read: 0,
               user_id: data.userID,
+              agency_id: data.agency_id,
             },
           },
         },
