@@ -101,35 +101,6 @@ export declare class UsersService {
         }[];
     }>;
     updateUser(id: number, updateUserDto: UpdateUserDto): Promise<{
-<<<<<<< HEAD
-        userID: number;
-        username: string;
-        password: string;
-        email: string;
-        phone_number: string;
-        first_name: string;
-        middle_name: string | null;
-        last_name: string;
-        date_of_birth: Date;
-        address: string | null;
-        create_at: Date;
-        updated_at: Date | null;
-        status: string;
-        last_login: Date | null;
-        suffix: string | null;
-        sex: string | null;
-        barangay: string | null;
-        city_municipal: string | null;
-        postal_code: number | null;
-        country: string | null;
-        province: string | null;
-        sss_id: string | null;
-        pagibig_id: string | null;
-        philhead_id: string | null;
-        role_Id: number | null;
-    }>;
-    saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any>;
-=======
         respCode: number;
         respMessage: string;
         agency: number;
@@ -147,6 +118,5 @@ export declare class UsersService {
     }>;
     saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any>;
     saveUserUpdate(user: number, data: UpdateUserDto): Promise<any>;
->>>>>>> benefits-module
     createData(data: Prisma.UsersCreateInput): Promise<any>;
 }

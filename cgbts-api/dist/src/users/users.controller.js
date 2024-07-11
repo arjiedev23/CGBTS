@@ -27,13 +27,8 @@ let UsersController = class UsersController {
     findAll() {
         return this.usersService.findAll();
     }
-<<<<<<< HEAD
-    updateUser(id, updateUserDto) {
-        return this.usersService.updateUser(+id, updateUserDto);
-=======
     updateUser(user, updateUserDto) {
         return this.usersService.updateUser(+user, updateUserDto);
->>>>>>> benefits-module
     }
     saveInfo(createUserDto) {
         return this.usersService.saveMoreInfo(createUserDto);
@@ -54,25 +49,15 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findAll", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Patch)(':id'),
-    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Query)('id')),
-=======
     (0, common_1.Patch)('/updateUser'),
     __param(0, (0, common_1.Query)('userid')),
->>>>>>> benefits-module
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "updateUser", null);
 __decorate([
-<<<<<<< HEAD
-    (0, common_1.Post)(),
-=======
     (0, common_1.Post)('/saveMoreInfo'),
->>>>>>> benefits-module
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserInfoDto]),

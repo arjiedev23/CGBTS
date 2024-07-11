@@ -84,14 +84,8 @@ let ContributionsService = class ContributionsService {
                 return { respCode: 0, respMessage: 'Something went wrong!' };
             }
             const res = await this.userContributions(Number(user));
-<<<<<<< HEAD
-            const count = res.length;
-            if (res.length === 0) {
-                return { respCode: 0, respMessage: 'No data found!' };
-=======
             if (res === null) {
                 return { respCode: 0, respMessage: 'No existing contribution!' };
->>>>>>> benefits-module
             }
             const count = res.length;
             return {
@@ -142,11 +136,6 @@ let ContributionsService = class ContributionsService {
                 });
             }
             return {
-<<<<<<< HEAD
-                respCode: 1,
-                respMessage: 'success',
-=======
->>>>>>> benefits-module
                 totalContributions: data.length,
                 contributions: contList,
             };
