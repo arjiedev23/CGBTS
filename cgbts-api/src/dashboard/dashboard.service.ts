@@ -1,22 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UsersService } from 'src/users/users.service';
+import { UtilityService } from 'src/utility/utility.service';
 
 @Injectable()
 export class DashboardService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly userService: UsersService,
+    private readonly utilityService: UtilityService,
   ) {}
 
   async notification(user: number) {
     try {
+      const checkUser = await this.utilityService.findUser(Number(user));
+      if (!checkUser) {
+        return { respCode: 0, respMessage: 'User not found!' };
+      }
+
       const res = await this.notif(user);
 
-      const checkUser = await this.userService.findUser(user);
-
-      if (!checkUser) {
-        return { respCode: 0, respMessage: 'User does not exist!' };
+      if (!res) {
+        return { respCode: 0, respMessage: 'No data found!' };
       }
 
       return { respCode: 1, respMessage: 'success', notifications: res };

@@ -106,7 +106,7 @@ model benefit_claims {
   claim_amount  Decimal
   claim_status  Int                @default(0)
   submitted_at  DateTime           @default(now())
-  processed_ad  DateTime?          @db.Timestamp(0)
+  processed_at  DateTime?          @db.Timestamp(0)
   remarks       String
   users         Users              @relation(fields: [userID], references: [userID])
   agency        agency_information @relation(fields: [agency_id], references: [agency_id])

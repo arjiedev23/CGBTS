@@ -9,7 +9,7 @@ export class UtilityService {
     try {
       const userCheck = this.prismaService.users.findFirst({
         where: {
-          userID: user,
+          userID: Number(user),
         },
       });
 

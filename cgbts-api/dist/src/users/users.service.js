@@ -125,7 +125,7 @@ let UsersService = class UsersService {
                 },
             });
             if (checkSSS.length != 0) {
-                return { respCode: 0, respMessage: 'Invalid', agency: 2 };
+                return { respCode: 0, respMessage: 'Invalid ID', agency: 2 };
             }
             const checkPagibig = await this.prismaService.users.findMany({
                 where: {
@@ -133,7 +133,7 @@ let UsersService = class UsersService {
                 },
             });
             if (checkPagibig.length != 0) {
-                return { respCode: 0, respMessage: 'Invalid', agency: 3 };
+                return { respCode: 0, respMessage: 'Invalid ID', agency: 3 };
             }
             const checkPhilH = await this.prismaService.users.findMany({
                 where: {
@@ -141,7 +141,7 @@ let UsersService = class UsersService {
                 },
             });
             if (checkPhilH.length != 0) {
-                return { respCode: 0, respMessage: 'Invalid', agency: 4 };
+                return { respCode: 0, respMessage: 'Invalid ID', agency: 4 };
             }
             const update = await this.saveUserUpdate(id, updateUserDto);
             console.log(update);
