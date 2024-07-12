@@ -157,8 +157,6 @@ export class ContributionsService {
         Number(process.env.CGBTS_PHILHEALTH),
       );
 
-      console.log(latestSSS + ' ' + latestPagibig + ' ' + latestPhilhealth);
-
       const getPostMonth = getMonthsAndYears(hireDate.post_date.toString());
 
       const postMonth = getPostMonth.length;

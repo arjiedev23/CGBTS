@@ -11,7 +11,10 @@ export class DashboardController {
   }
 
   @Patch('/notification')
-  readNotification(@Query('userid') user: string) {
-    return this.dashboardService.readNotifications(+user);
+  readNotification(
+    @Query('userid') user: number,
+    @Query('contriId') contribution: number,
+  ) {
+    return this.dashboardService.readNotifications(user, contribution);
   }
 }

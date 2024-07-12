@@ -28,11 +28,28 @@ export class DashboardService {
     }
   }
 
-  async readNotifications(user: number) {
+  async readNotifications(user: number, contriId: number) {
     try {
-      const res = await this.prismaService.notifications.updateMany({
+      const read = await this.readNotif(user, contriId);
+
+      if (!read) {
+        return { respCode: 0, respMessage: 'Something went wrong!' };
+      }
+
+      return { respCode: 0, respMessage: 'success', notif: read };
+    } catch (ex) {
+      console.log(ex);
+
+      throw new Error();
+    }
+  }
+
+  async readNotif(userID: number, contriID: number): Promise<any> {
+    try {
+      const res = this.prismaService.notifications.updateMany({
         where: {
-          user_id: user,
+          user_id: Number(userID),
+          Contribution_id: Number(contriID),
         },
         data: {
           is_read: 1,
@@ -41,6 +58,7 @@ export class DashboardService {
 
       return res;
     } catch (ex) {
+      console.log(ex);
       throw new Error();
     }
   }
@@ -50,7 +68,6 @@ export class DashboardService {
       const res = this.prismaService.notifications.findMany({
         where: {
           user_id: user_id,
-          is_read: 0,
         },
         include: {
           agency: {

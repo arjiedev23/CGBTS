@@ -126,7 +126,6 @@ let ContributionsService = class ContributionsService {
             const latestSSS = await this.getLastUpdate(userid, Number(process.env.CGBTS_SSS));
             const latestPagibig = await this.getLastUpdate(userid, Number(process.env.CGBTS_PAGIBIG));
             const latestPhilhealth = await this.getLastUpdate(userid, Number(process.env.CGBTS_PHILHEALTH));
-            console.log(latestSSS + ' ' + latestPagibig + ' ' + latestPhilhealth);
             const getPostMonth = getMonthsAndYears(hireDate.post_date.toString());
             const postMonth = getPostMonth.length;
             const data = await this.prismaService.contributions.findMany({
