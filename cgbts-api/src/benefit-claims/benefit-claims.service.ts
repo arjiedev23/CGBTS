@@ -54,7 +54,7 @@ export class BenefitClaimsService {
         };
       }
 
-      const saveClaims = this.createBenefitClaims(createBenefitClaimDto);
+      const saveClaims = await this.createBenefitClaims(createBenefitClaimDto);
 
       if (!saveClaims) {
         return { respCode: 0, respMessage: 'createBenefitClaims save error' };
@@ -72,10 +72,16 @@ export class BenefitClaimsService {
 
   async viewClaimDetails(claimid: number, userid: number) {
     try {
-      const claims = this.viewBenefitsDetails(claimid, userid);
+      const checkUser = await this.utilityService.findUser(userid);
 
-      if (!claims) {
-        return { respCode: 0, respMessage: 'Something went wrong!' };
+      if (!checkUser) {
+        return { respCode: 0, respMessage: 'User not found!' };
+      }
+
+      const claims = await this.viewBenefitsDetails(claimid, userid);
+
+      if (claims.length === 0) {
+        return { respCode: 0, respMessage: 'No data found!' };
       }
 
       return { respCode: 1, respMessage: 'success', claimDetails: claims };
@@ -86,9 +92,10 @@ export class BenefitClaimsService {
 
   async viewBenefitsDetails(claim_id: number, user_id: number): Promise<any> {
     try {
-      return await this.prismaService.benefit_claims.findMany({
+      const res = this.prismaService.benefit_claims.findMany({
         where: {
-          userID: user_id,
+          userID: Number(user_id),
+          claim_id: Number(claim_id),
         },
         include: {
           users: {
@@ -99,6 +106,8 @@ export class BenefitClaimsService {
           agency: true,
         },
       });
+
+      return res;
     } catch (ex) {
       throw new Error(ex);
     }
@@ -106,7 +115,7 @@ export class BenefitClaimsService {
 
   async createBenefitClaims(data: CreateBenefitClaimDto): Promise<any> {
     try {
-      const saveClaims = await this.prismaService.benefit_claims.create({
+      const saveClaims = this.prismaService.benefit_claims.create({
         data: {
           claim_amount: data.claim_amount,
           remarks: data.remarks,

@@ -48,18 +48,8 @@ let UsersService = class UsersService {
     }
     async saveMoreInfo(createUserInfoDto) {
         try {
-<<<<<<< HEAD
-            const checkUser = await this.prismaService.users.findMany({
-                where: {
-                    userID: createUserInfoDto.user_id,
-                },
-            });
-            console.log(checkUser);
-            if (checkUser.length === 0) {
-=======
             const checkUser = await this.findUser(createUserInfoDto.user_id);
             if (!checkUser) {
->>>>>>> info-resources-module
                 return {
                     respCode: 0,
                     respMessage: 'User does not exist!',

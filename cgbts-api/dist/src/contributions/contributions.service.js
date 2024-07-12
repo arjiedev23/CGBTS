@@ -82,10 +82,6 @@ let ContributionsService = class ContributionsService {
                 return { respCode: 0, respMessage: 'User not found!' };
             }
             const res = await this.userContributions(Number(user));
-<<<<<<< HEAD
-            if (res === null) {
-                return { respCode: 0, respMessage: 'No existing contribution!' };
-=======
             if (res === 404) {
                 return { respCode: 0, respMessage: 'No contribution' };
             }
@@ -94,7 +90,6 @@ let ContributionsService = class ContributionsService {
             }
             if (res.respCode === 30) {
                 return { respCode: 0, respMessage: 'No existing contribution!' };
->>>>>>> info-resources-module
             }
             const count = res.length;
             return {
@@ -165,8 +160,6 @@ let ContributionsService = class ContributionsService {
                 });
             }
             return {
-<<<<<<< HEAD
-=======
                 sss: {
                     total: sssTotal,
                     lastUpdate: latestSSS === null ? '' : latestSSS.post_date,
@@ -179,7 +172,6 @@ let ContributionsService = class ContributionsService {
                     total: philhealthTotal,
                     lastUpdate: latestPhilhealth === null ? '' : latestPhilhealth.post_date,
                 },
->>>>>>> info-resources-module
                 totalContributions: data.length,
                 contributions: contList,
             };

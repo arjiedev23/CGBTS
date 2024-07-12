@@ -16,6 +16,6 @@ export class BenefitClaimsController {
     @Query('userid') user: number,
     @Query('claimid') claim: number,
   ) {
-    return this.benefitClaimsService.viewClaimDetails(user, claim);
+    return this.benefitClaimsService.viewClaimDetails(claim, user);
   }
 }
