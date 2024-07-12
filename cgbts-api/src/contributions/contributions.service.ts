@@ -90,10 +90,16 @@ export class ContributionsService {
         return { respCode: 0, respMessage: 'Something went wrong!' };
       }
 
+      const checkUser = await this.utilityService.findUser(user);
+
+      if (!checkUser) {
+        return { respCode: 0, respMessage: 'User not found!' };
+      }
+
       const res = await this.userContributions(Number(user));
 
       if (res === 404) {
-        return { respCode: 0, respMessage: 'User does not exist' };
+        return { respCode: 0, respMessage: 'No contribution' };
       }
 
       if (res === null) {
@@ -112,15 +118,7 @@ export class ContributionsService {
         contributions: res,
       };
     } catch (ex) {
-      if (ex instanceof Prisma.PrismaClientKnownRequestError) {
-        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-      } else if (ex instanceof Prisma.PrismaClientUnknownRequestError) {
-        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-      } else if (ex instanceof Prisma.PrismaClientValidationError) {
-        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-      } else {
-        throw new Error(ex);
-      }
+      throw new Error(ex);
     }
   }
 
@@ -159,7 +157,10 @@ export class ContributionsService {
         Number(process.env.CGBTS_PHILHEALTH),
       );
 
+      console.log(latestSSS + ' ' + latestPagibig + ' ' + latestPhilhealth);
+
       const getPostMonth = getMonthsAndYears(hireDate.post_date.toString());
+
       const postMonth = getPostMonth.length;
       const data = await this.prismaService.contributions.findMany({
         where: {
@@ -212,29 +213,22 @@ export class ContributionsService {
       return {
         sss: {
           total: sssTotal,
-          lastUpdate: latestSSS.post_date,
+          lastUpdate: latestSSS === null ? '' : latestSSS.post_date,
         },
         pagibig: {
           total: pagibigTotal,
-          lastUpdate: latestPagibig.post_date,
+          lastUpdate: latestPagibig === null ? '' : latestPagibig.post_date,
         },
         philhealth: {
           total: philhealthTotal,
-          lastUpdate: latestPhilhealth.post_date,
+          lastUpdate:
+            latestPhilhealth === null ? '' : latestPhilhealth.post_date,
         },
         totalContributions: data.length,
         contributions: contList,
       };
     } catch (ex) {
-      if (ex instanceof Prisma.PrismaClientKnownRequestError) {
-        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-      } else if (ex instanceof Prisma.PrismaClientUnknownRequestError) {
-        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-      } else if (ex instanceof Prisma.PrismaClientValidationError) {
-        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-      } else {
-        throw new Error();
-      }
+      throw new Error(ex);
     }
   }
 
@@ -337,10 +331,9 @@ export class ContributionsService {
         },
       });
 
-      const res = userContri == null ? '' : userContri.amount;
+      const res = userContri === null ? 0 : userContri.amount;
       return res;
     } catch (err) {
-      console.log(err.message);
       throw new Error();
     }
   }

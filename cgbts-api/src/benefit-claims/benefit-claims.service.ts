@@ -1,25 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBenefitClaimDto } from './dto/create-benefit-claim.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { UtilityService } from 'src/utility/utility.service';
 
 @Injectable()
 export class BenefitClaimsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly utilityService: UtilityService,
+  ) {}
   async saveBenefitClaims(createBenefitClaimDto: CreateBenefitClaimDto) {
     try {
+      const checkUser = await this.utilityService.findUser(
+        Number(createBenefitClaimDto.user_id),
+      );
+
+      const checkAgency = await this.utilityService.findAgency(
+        Number(createBenefitClaimDto.agency_id),
+      );
+
+      if (!checkUser) {
+        return { respCode: 0, respMessage: 'User not found!' };
+      }
+
+      if (!checkAgency) {
+        return { respCode: 0, respMessage: 'Agency not found!' };
+      }
+
       const checkContribution = await this.prismaService.contributions.findMany(
         {
           where: {
-            userID: createBenefitClaimDto.user_id,
-            agency_id: createBenefitClaimDto.agency_id,
+            userID: Number(createBenefitClaimDto.user_id),
+            agency_id: Number(createBenefitClaimDto.agency_id),
           },
         },
       );
 
       const benefitType = await this.prismaService.benefits_types.findFirst({
         where: {
-          btypes_id: createBenefitClaimDto.benefit_type,
+          btypes_id: Number(createBenefitClaimDto.benefit_type),
         },
         select: {
           required_month: true,
@@ -31,10 +50,7 @@ export class BenefitClaimsService {
       if (checkContribution.length < benefitType.required_month) {
         return {
           respCode: 0,
-          respMessage:
-            'User has to paid at least ' +
-            benefitType.required_month +
-            ' month/s of contributions',
+          respMessage: `User has to paid at least ${benefitType.required_month} month/s of contributions`,
         };
       }
 
@@ -50,15 +66,7 @@ export class BenefitClaimsService {
         claims: saveClaims,
       };
     } catch (ex) {
-      if (ex instanceof Prisma.PrismaClientKnownRequestError) {
-        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-      } else if (ex instanceof Prisma.PrismaClientUnknownRequestError) {
-        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-      } else if (ex instanceof Prisma.PrismaClientValidationError) {
-        return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-      } else {
-        throw new Error(ex);
-      }
+      throw new Error(ex);
     }
   }
 
@@ -82,10 +90,13 @@ export class BenefitClaimsService {
         where: {
           userID: user_id,
         },
-        select: {
-          claim_amount: true,
-          claim_status: true,
-          remarks: true,
+        include: {
+          users: {
+            include: {
+              user_info: true,
+            },
+          },
+          agency: true,
         },
       });
     } catch (ex) {
@@ -99,9 +110,9 @@ export class BenefitClaimsService {
         data: {
           claim_amount: data.claim_amount,
           remarks: data.remarks,
-          userID: data.user_id,
-          btype_id: data.benefit_type,
-          agency_id: data.agency_id,
+          userID: Number(data.user_id),
+          btype_id: Number(data.benefit_type),
+          agency_id: Number(data.agency_id),
         },
       });
 

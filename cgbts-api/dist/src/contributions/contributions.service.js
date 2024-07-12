@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContributionsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-const client_1 = require("@prisma/client");
 const utility_service_1 = require("../utility/utility.service");
 let ContributionsService = class ContributionsService {
     constructor(prismaService, utilityService) {
@@ -78,13 +77,17 @@ let ContributionsService = class ContributionsService {
             if (user.toString().length === 0) {
                 return { respCode: 0, respMessage: 'Something went wrong!' };
             }
+            const checkUser = await this.utilityService.findUser(user);
+            if (!checkUser) {
+                return { respCode: 0, respMessage: 'User not found!' };
+            }
             const res = await this.userContributions(Number(user));
 <<<<<<< HEAD
             if (res === null) {
                 return { respCode: 0, respMessage: 'No existing contribution!' };
 =======
             if (res === 404) {
-                return { respCode: 0, respMessage: 'User does not exist' };
+                return { respCode: 0, respMessage: 'No contribution' };
             }
             if (res === null) {
                 return { respCode: 0, respMessage: 'No existing contribution!' };
@@ -102,18 +105,7 @@ let ContributionsService = class ContributionsService {
             };
         }
         catch (ex) {
-            if (ex instanceof client_1.Prisma.PrismaClientKnownRequestError) {
-                return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-            }
-            else if (ex instanceof client_1.Prisma.PrismaClientUnknownRequestError) {
-                return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-            }
-            else if (ex instanceof client_1.Prisma.PrismaClientValidationError) {
-                return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-            }
-            else {
-                throw new Error(ex);
-            }
+            throw new Error(ex);
         }
     }
     async userContributions(userid) {
@@ -139,6 +131,7 @@ let ContributionsService = class ContributionsService {
             const latestSSS = await this.getLastUpdate(userid, Number(process.env.CGBTS_SSS));
             const latestPagibig = await this.getLastUpdate(userid, Number(process.env.CGBTS_PAGIBIG));
             const latestPhilhealth = await this.getLastUpdate(userid, Number(process.env.CGBTS_PHILHEALTH));
+            console.log(latestSSS + ' ' + latestPagibig + ' ' + latestPhilhealth);
             const getPostMonth = getMonthsAndYears(hireDate.post_date.toString());
             const postMonth = getPostMonth.length;
             const data = await this.prismaService.contributions.findMany({
@@ -176,15 +169,15 @@ let ContributionsService = class ContributionsService {
 =======
                 sss: {
                     total: sssTotal,
-                    lastUpdate: latestSSS.post_date,
+                    lastUpdate: latestSSS === null ? '' : latestSSS.post_date,
                 },
                 pagibig: {
                     total: pagibigTotal,
-                    lastUpdate: latestPagibig.post_date,
+                    lastUpdate: latestPagibig === null ? '' : latestPagibig.post_date,
                 },
                 philhealth: {
                     total: philhealthTotal,
-                    lastUpdate: latestPhilhealth.post_date,
+                    lastUpdate: latestPhilhealth === null ? '' : latestPhilhealth.post_date,
                 },
 >>>>>>> info-resources-module
                 totalContributions: data.length,
@@ -192,18 +185,7 @@ let ContributionsService = class ContributionsService {
             };
         }
         catch (ex) {
-            if (ex instanceof client_1.Prisma.PrismaClientKnownRequestError) {
-                return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-            }
-            else if (ex instanceof client_1.Prisma.PrismaClientUnknownRequestError) {
-                return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-            }
-            else if (ex instanceof client_1.Prisma.PrismaClientValidationError) {
-                return { respCode: 0, respMessage: ex.name, errorType: 'Prisma' };
-            }
-            else {
-                throw new Error();
-            }
+            throw new Error(ex);
         }
     }
     async updateContri(id, updateContributionDto) {
@@ -293,11 +275,10 @@ let ContributionsService = class ContributionsService {
                     amount: true,
                 },
             });
-            const res = userContri == null ? '' : userContri.amount;
+            const res = userContri === null ? 0 : userContri.amount;
             return res;
         }
         catch (err) {
-            console.log(err.message);
             throw new Error();
         }
     }
