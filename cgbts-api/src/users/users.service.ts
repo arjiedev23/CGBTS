@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserDto, CreateUserInfoDto } from './dto/create-user.dto';
+import { CreateUserInfoDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -121,6 +121,24 @@ export class UsersService {
     }
   }
 
+  async changePassword(userId: number, newPassword: string) {
+    try {
+      const updatePass = await this.updateUserPassword(userId, newPassword);
+
+      if (!updatePass) {
+        return { respCode: 0, respMessage: 'Error update' };
+      }
+
+      return {
+        respCode: 1,
+        respMessage: 'User password successfully updated',
+        res: updatePass,
+      };
+    } catch (ex) {
+      throw new Error();
+    }
+  }
+
   async updateUser(id: number, updateUserDto: UpdateUserDto) {
     try {
       const checkSSS = await this.prismaService.users.findMany({
@@ -155,8 +173,6 @@ export class UsersService {
 
       const update = await this.saveUserUpdate(id, updateUserDto);
 
-      console.log(update);
-
       if (!update) {
         return { respCode: 0, respMessage: 'Something went wrong!' };
       }
@@ -166,6 +182,26 @@ export class UsersService {
         respMessage: 'User Successfully updated!',
         updatedDetails: update,
       };
+    } catch (ex) {
+      throw new Error(ex);
+    }
+  }
+
+  async updateUserPassword(
+    userId: number,
+    newPasswordStr: string,
+  ): Promise<any> {
+    try {
+      const password = this.prismaService.users.update({
+        where: {
+          userID: userId,
+        },
+        data: {
+          password: newPasswordStr,
+        },
+      });
+
+      return password;
     } catch (ex) {
       throw new Error(ex);
     }

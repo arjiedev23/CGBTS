@@ -103,6 +103,15 @@ export declare class UsersService {
             role_Id: number | null;
         }[];
     }>;
+    changePassword(userId: number, newPassword: string): Promise<{
+        respCode: number;
+        respMessage: string;
+        res?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        res: any;
+    }>;
     updateUser(id: number, updateUserDto: UpdateUserDto): Promise<{
         respCode: number;
         respMessage: string;
@@ -119,6 +128,7 @@ export declare class UsersService {
         updatedDetails: any;
         agency?: undefined;
     }>;
+    updateUserPassword(userId: number, newPasswordStr: string): Promise<any>;
     saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any>;
     saveUserUpdate(user: number, data: UpdateUserDto): Promise<any>;
     createData(data: Prisma.UsersCreateInput): Promise<any>;

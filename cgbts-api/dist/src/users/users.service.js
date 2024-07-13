@@ -117,6 +117,22 @@ let UsersService = class UsersService {
             throw new Error();
         }
     }
+    async changePassword(userId, newPassword) {
+        try {
+            const updatePass = await this.updateUserPassword(userId, newPassword);
+            if (!updatePass) {
+                return { respCode: 0, respMessage: 'Error update' };
+            }
+            return {
+                respCode: 1,
+                respMessage: 'User password successfully updated',
+                res: updatePass,
+            };
+        }
+        catch (ex) {
+            throw new Error();
+        }
+    }
     async updateUser(id, updateUserDto) {
         try {
             const checkSSS = await this.prismaService.users.findMany({
@@ -144,7 +160,6 @@ let UsersService = class UsersService {
                 return { respCode: 0, respMessage: 'Invalid ID', agency: 4 };
             }
             const update = await this.saveUserUpdate(id, updateUserDto);
-            console.log(update);
             if (!update) {
                 return { respCode: 0, respMessage: 'Something went wrong!' };
             }
@@ -153,6 +168,22 @@ let UsersService = class UsersService {
                 respMessage: 'User Successfully updated!',
                 updatedDetails: update,
             };
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async updateUserPassword(userId, newPasswordStr) {
+        try {
+            const password = this.prismaService.users.update({
+                where: {
+                    userID: userId,
+                },
+                data: {
+                    password: newPasswordStr,
+                },
+            });
+            return password;
         }
         catch (ex) {
             throw new Error(ex);

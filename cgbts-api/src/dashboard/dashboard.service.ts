@@ -36,7 +36,7 @@ export class DashboardService {
         return { respCode: 0, respMessage: 'Something went wrong!' };
       }
 
-      return { respCode: 0, respMessage: 'success', notif: read };
+      return { respCode: 1, respMessage: 'success', notif: read };
     } catch (ex) {
       console.log(ex);
 
