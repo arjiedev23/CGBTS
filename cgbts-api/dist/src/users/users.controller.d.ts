@@ -54,6 +54,10 @@ export declare class UsersController {
             sss_id: string | null;
             pagibig_id: string | null;
             philhealth_id: string | null;
+            tin: string | null;
+            nationality: string | null;
+            civil_status: string | null;
+            placeof_birth: string | null;
             role_Id: number | null;
         }[];
     }>;
