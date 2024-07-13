@@ -249,6 +249,10 @@ export class UsersService {
           pagibig_id: data.pagibig_id,
           philhealth_id: data.philhealth_id,
           updated_at: now.toISOString(),
+          civil_status: data.civil_status,
+          tin: data.tin,
+          nationality: data.nationality,
+          placeof_birth: data.placeof_birth,
         },
       });
 

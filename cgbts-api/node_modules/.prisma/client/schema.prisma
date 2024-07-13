@@ -40,6 +40,10 @@ model Users {
   sss_id         String?
   pagibig_id     String?
   philhealth_id  String?
+  tin            String? // new
+  nationality    String? // new
+  civil_status   String? // new
+  placeof_birth  String? // new
   role_Id        Int?             @default(1)
   contributions  contributions[]
   notifications  notifications[]
