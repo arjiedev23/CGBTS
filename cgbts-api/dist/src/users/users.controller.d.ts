@@ -61,6 +61,15 @@ export declare class UsersController {
             role_Id: number | null;
         }[];
     }>;
+    userDetails(user: number): Promise<{
+        respCode: number;
+        respMessage: string;
+        data?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        data: any;
+    }>;
     updateUser(user: string, updateUserDto: UpdateUserDto): Promise<{
         respCode: number;
         respMessage: string;

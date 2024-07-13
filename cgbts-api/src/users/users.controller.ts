@@ -18,6 +18,11 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('/userDetails')
+  userDetails(@Query('userid') user: number) {
+    return this.usersService.userDetails(user);
+  }
+
   @Patch('/updateUser')
   updateUser(
     @Query('userid') user: string,

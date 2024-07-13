@@ -117,6 +117,19 @@ let UsersService = class UsersService {
             throw new Error();
         }
     }
+    async userDetails(userId) {
+        try {
+            const res = await this.getUserDetails(userId);
+            if (!res) {
+                return { respCode: 0, respMessage: 'User not found' };
+            }
+            return { respCode: 1, respMessage: 'success', data: res };
+        }
+        catch (ex) {
+            console.log(ex);
+            throw new Error();
+        }
+    }
     async changePassword(userId, newPassword) {
         try {
             const updatePass = await this.updateUserPassword(userId, newPassword);
@@ -184,6 +197,22 @@ let UsersService = class UsersService {
                 },
             });
             return password;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async getUserDetails(user) {
+        try {
+            const viewUser = this.prismaService.users.findUnique({
+                where: {
+                    userID: Number(user),
+                },
+                include: {
+                    user_info: true,
+                },
+            });
+            return viewUser;
         }
         catch (ex) {
             throw new Error(ex);

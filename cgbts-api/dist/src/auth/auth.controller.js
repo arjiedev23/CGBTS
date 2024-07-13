@@ -24,7 +24,7 @@ let AuthController = class AuthController {
         try {
             const result = await this.authService.login(loginDTO);
             return {
-                respCode: '1',
+                respCode: 1,
                 respMessage: 'Successfully login!',
                 res: result,
             };

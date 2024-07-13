@@ -27,6 +27,9 @@ let UsersController = class UsersController {
     findAll() {
         return this.usersService.findAll();
     }
+    userDetails(user) {
+        return this.usersService.userDetails(user);
+    }
     updateUser(user, updateUserDto) {
         return this.usersService.updateUser(+user, updateUserDto);
     }
@@ -48,6 +51,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('/userDetails'),
+    __param(0, (0, common_1.Query)('userid')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "userDetails", null);
 __decorate([
     (0, common_1.Patch)('/updateUser'),
     __param(0, (0, common_1.Query)('userid')),
