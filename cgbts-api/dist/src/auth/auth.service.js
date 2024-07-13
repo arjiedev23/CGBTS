@@ -59,6 +59,7 @@ let AuthService = class AuthService {
             data: {
                 userid: users.userID,
                 fullname: users.first_name + ' ' + users.middle_name + ' ' + users.last_name,
+                isVerified: users.isVerified,
             },
             token: this.jwtService.sign({ username }),
             last_login: lastLogin.last_login.toLocaleString(),

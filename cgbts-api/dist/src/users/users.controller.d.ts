@@ -41,6 +41,7 @@ export declare class UsersController {
             create_at: Date;
             updated_at: Date | null;
             status: string;
+            isVerified: number;
             last_login: Date | null;
             workStartDate: Date | null;
             suffix: string | null;
