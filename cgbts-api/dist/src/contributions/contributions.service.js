@@ -161,15 +161,19 @@ let ContributionsService = class ContributionsService {
             return {
                 sss: {
                     total: sssTotal,
-                    lastUpdate: latestSSS === null ? '' : latestSSS.post_date,
+                    lastUpdate: latestSSS === null ? '' : latestSSS.post_date.toLocaleString(),
                 },
                 pagibig: {
                     total: pagibigTotal,
-                    lastUpdate: latestPagibig === null ? '' : latestPagibig.post_date,
+                    lastUpdate: latestPagibig === null
+                        ? ''
+                        : latestPagibig.post_date.toLocaleString(),
                 },
                 philhealth: {
                     total: philhealthTotal,
-                    lastUpdate: latestPhilhealth === null ? '' : latestPhilhealth.post_date,
+                    lastUpdate: latestPhilhealth === null
+                        ? ''
+                        : latestPhilhealth.post_date.toLocaleString(),
                 },
                 totalContributions: data.length,
                 contributions: contList,

@@ -38,6 +38,7 @@ export declare class UsersController {
             last_name: string;
             date_of_birth: Date;
             address: string | null;
+            telephone_number: string | null;
             create_at: Date;
             updated_at: Date | null;
             status: string;
