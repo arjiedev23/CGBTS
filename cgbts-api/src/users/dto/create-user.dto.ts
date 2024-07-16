@@ -6,6 +6,7 @@ export class CreateUserDto {
   first_name: string;
   middle_name: string;
   last_name: string;
+  suffix: string;
   date_of_birth: Date;
   address: string;
   sex: string;

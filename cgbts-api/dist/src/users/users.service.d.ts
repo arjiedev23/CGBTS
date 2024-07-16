@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserInfoDto } from './dto/create-user.dto';
+import { ChangeUserPasswordDto, CreateUserInfoDto } from './dto/create-user.dto';
 export declare class UsersService {
     private readonly prismaService;
     constructor(prismaService: PrismaService);
@@ -124,14 +124,9 @@ export declare class UsersService {
         respMessage: string;
         data: any;
     }>;
-    changePassword(userId: number, newPassword: string): Promise<{
+    changePassword(changeUserPasswordDto: ChangeUserPasswordDto): Promise<{
         respCode: number;
         respMessage: string;
-        res?: undefined;
-    } | {
-        respCode: number;
-        respMessage: string;
-        res: any;
     }>;
     updateUser(id: number, updateUserDto: UpdateUserDto): Promise<{
         respCode: number;
@@ -149,7 +144,7 @@ export declare class UsersService {
         updatedDetails: any;
         agency?: undefined;
     }>;
-    updateUserPassword(userId: number, newPasswordStr: string): Promise<any>;
+    updateUserPassword(data: ChangeUserPasswordDto): Promise<any>;
     getUserDetails(user: number): Promise<any>;
     saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any>;
     saveUserUpdate(user: number, data: UpdateUserDto): Promise<any>;

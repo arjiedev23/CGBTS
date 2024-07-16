@@ -6,14 +6,10 @@ import {
   ChangeUserPasswordDto,
   CreateUserInfoDto,
 } from './dto/create-user.dto';
-import { UtilityService } from 'src/utility/utility.service';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly utilityService: UtilityService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createUserDto: Prisma.UsersCreateInput) {
     try {
@@ -303,6 +299,12 @@ export class UsersService {
           tin: data.tin,
           nationality: data.nationality,
           placeof_birth: data.placeof_birth,
+          telephone_number: data.telephone_number,
+          religion: data.religion,
+          subdivision: data.subdivision,
+          street: data.street,
+          house: data.house,
+          room: data.room,
         },
       });
 

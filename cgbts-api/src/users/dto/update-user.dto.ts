@@ -14,4 +14,10 @@ export class UpdateUserDto {
   nationality: string;
   civil_status: string;
   placeof_birth: string;
+  religion: string;
+  telephone_number: string;
+  subdivision: string;
+  street: string;
+  house: string;
+  room: string;
 }

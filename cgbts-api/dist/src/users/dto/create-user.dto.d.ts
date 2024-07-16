@@ -29,3 +29,8 @@ export declare class CreateUserInfoDto {
     relationship: string;
     user_id: number;
 }
+export declare class ChangeUserPasswordDto {
+    new_password: string;
+    user_id: number;
+    current_password: string;
+}

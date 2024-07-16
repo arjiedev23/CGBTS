@@ -30,6 +30,9 @@ let UsersController = class UsersController {
     userDetails(user) {
         return this.usersService.userDetails(user);
     }
+    updateUserPaswword(changeUserPasswordDto) {
+        return this.usersService.updateUserPassword(changeUserPasswordDto);
+    }
     updateUser(user, updateUserDto) {
         return this.usersService.updateUser(+user, updateUserDto);
     }
@@ -58,6 +61,13 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "userDetails", null);
+__decorate([
+    (0, common_1.Post)('/updatePasswordUser'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_user_dto_1.ChangeUserPasswordDto]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "updateUserPaswword", null);
 __decorate([
     (0, common_1.Patch)('/updateUser'),
     __param(0, (0, common_1.Query)('userid')),

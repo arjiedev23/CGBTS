@@ -41,10 +41,15 @@ model Users {
   sss_id           String?
   pagibig_id       String?
   philhealth_id    String?
-  tin              String? // new
-  nationality      String? // new
-  civil_status     String? // new
-  placeof_birth    String? // new
+  tin              String?
+  nationality      String?
+  civil_status     String?
+  placeof_birth    String?
+  religion         String?
+  subdivision      String?
+  street           String?
+  house            String?
+  room             String?
   role_Id          Int?             @default(1)
   contributions    contributions[]
   notifications    notifications[]
