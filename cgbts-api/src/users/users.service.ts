@@ -6,14 +6,11 @@ import {
   ChangeUserPasswordDto,
   CreateUserInfoDto,
 } from './dto/create-user.dto';
-import { UtilityService } from 'src/utility/utility.service';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly prismaService: PrismaService,
-    private readonly utilityService: UtilityService,
-  ) {}
+    private readonly prismaService: PrismaService) {}
 
   async create(createUserDto: Prisma.UsersCreateInput) {
     try {

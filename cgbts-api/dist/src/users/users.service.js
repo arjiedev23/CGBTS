@@ -130,16 +130,26 @@ let UsersService = class UsersService {
             throw new Error();
         }
     }
-    async changePassword(userId, newPassword) {
+    async changePassword(changeUserPasswordDto) {
         try {
-            const updatePass = await this.updateUserPassword(userId, newPassword);
+            const checkUser = await this.prismaService.users.findUnique({
+                where: {
+                    userID: changeUserPasswordDto.user_id,
+                },
+            });
+            if (!checkUser) {
+                return { respCode: 0, respMessage: 'User not found!' };
+            }
+            if (checkUser.password !== changeUserPasswordDto.current_password) {
+                return { respCode: 0, respMessage: 'Incorrect password!' };
+            }
+            const updatePass = await this.updateUserPassword(changeUserPasswordDto);
             if (!updatePass) {
                 return { respCode: 0, respMessage: 'Error update' };
             }
             return {
                 respCode: 1,
                 respMessage: 'User password successfully updated',
-                res: updatePass,
             };
         }
         catch (ex) {
@@ -186,14 +196,14 @@ let UsersService = class UsersService {
             throw new Error(ex);
         }
     }
-    async updateUserPassword(userId, newPasswordStr) {
+    async updateUserPassword(data) {
         try {
             const password = this.prismaService.users.update({
                 where: {
-                    userID: userId,
+                    userID: data.user_id,
                 },
                 data: {
-                    password: newPasswordStr,
+                    password: data.new_password,
                 },
             });
             return password;
