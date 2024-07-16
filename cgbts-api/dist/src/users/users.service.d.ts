@@ -71,6 +71,11 @@ export declare class UsersService {
         nationality: string | null;
         civil_status: string | null;
         placeof_birth: string | null;
+        religion: string | null;
+        subdivision: string | null;
+        street: string | null;
+        house: string | null;
+        room: string | null;
         role_Id: number | null;
     }[]>;
     findAll(): Promise<{
@@ -112,6 +117,11 @@ export declare class UsersService {
             nationality: string | null;
             civil_status: string | null;
             placeof_birth: string | null;
+            religion: string | null;
+            subdivision: string | null;
+            street: string | null;
+            house: string | null;
+            room: string | null;
             role_Id: number | null;
         }[];
     }>;

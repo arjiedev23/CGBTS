@@ -232,7 +232,7 @@ let UsersService = class UsersService {
         try {
             const dob = new Date(createUserInfoDto.DOB);
             createUserInfoDto.DOB = dob.toISOString();
-            const saveInfo = await this.prismaService.user_info.create({
+            const saveInfo = await this.prismaService.user_info.createMany({
                 data: {
                     first_name: createUserInfoDto.first_name,
                     last_name: createUserInfoDto.last_name,
@@ -244,6 +244,7 @@ let UsersService = class UsersService {
                     contact_number: createUserInfoDto.contact_number,
                 },
             });
+            console.log(saveInfo);
             return saveInfo;
         }
         catch (ex) {
@@ -273,6 +274,12 @@ let UsersService = class UsersService {
                     tin: data.tin,
                     nationality: data.nationality,
                     placeof_birth: data.placeof_birth,
+                    telephone_number: data.telephone_number,
+                    religion: data.religion,
+                    subdivision: data.subdivision,
+                    street: data.street,
+                    house: data.house,
+                    room: data.room,
                 },
             });
             return update;

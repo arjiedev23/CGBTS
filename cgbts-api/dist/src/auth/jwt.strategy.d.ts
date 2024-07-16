@@ -38,6 +38,11 @@ export declare class JwtStrategy extends JwtStrategy_base {
         nationality: string | null;
         civil_status: string | null;
         placeof_birth: string | null;
+        religion: string | null;
+        subdivision: string | null;
+        street: string | null;
+        house: string | null;
+        room: string | null;
         role_Id: number | null;
     }>;
 }
