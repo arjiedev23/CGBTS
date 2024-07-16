@@ -1,6 +1,10 @@
 import { Controller, Get, Post, Body, Query, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, CreateUserInfoDto } from './dto/create-user.dto';
+import {
+  ChangeUserPasswordDto,
+  CreateUserDto,
+  CreateUserInfoDto,
+} from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -21,6 +25,11 @@ export class UsersController {
   @Get('/userDetails')
   userDetails(@Query('userid') user: number) {
     return this.usersService.userDetails(user);
+  }
+
+  @Post('/updatePasswordUser')
+  updateUserPaswword(@Body() changeUserPasswordDto: ChangeUserPasswordDto) {
+    return this.usersService.updateUserPassword(changeUserPasswordDto);
   }
 
   @Patch('/updateUser')

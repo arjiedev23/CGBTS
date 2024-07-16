@@ -2,11 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserInfoDto } from './dto/create-user.dto';
+import {
+  ChangeUserPasswordDto,
+  CreateUserInfoDto,
+} from './dto/create-user.dto';
+import { UtilityService } from 'src/utility/utility.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly utilityService: UtilityService,
+  ) {}
 
   async create(createUserDto: Prisma.UsersCreateInput) {
     try {
@@ -137,9 +144,23 @@ export class UsersService {
     }
   }
 
-  async changePassword(userId: number, newPassword: string) {
+  async changePassword(changeUserPasswordDto: ChangeUserPasswordDto) {
     try {
-      const updatePass = await this.updateUserPassword(userId, newPassword);
+      const checkUser = await this.prismaService.users.findUnique({
+        where: {
+          userID: changeUserPasswordDto.user_id,
+        },
+      });
+
+      if (!checkUser) {
+        return { respCode: 0, respMessage: 'User not found!' };
+      }
+
+      if (checkUser.password !== changeUserPasswordDto.current_password) {
+        return { respCode: 0, respMessage: 'Incorrect password!' };
+      }
+
+      const updatePass = await this.updateUserPassword(changeUserPasswordDto);
 
       if (!updatePass) {
         return { respCode: 0, respMessage: 'Error update' };
@@ -148,7 +169,6 @@ export class UsersService {
       return {
         respCode: 1,
         respMessage: 'User password successfully updated',
-        res: updatePass,
       };
     } catch (ex) {
       throw new Error();
@@ -203,17 +223,14 @@ export class UsersService {
     }
   }
 
-  async updateUserPassword(
-    userId: number,
-    newPasswordStr: string,
-  ): Promise<any> {
+  async updateUserPassword(data: ChangeUserPasswordDto): Promise<any> {
     try {
       const password = this.prismaService.users.update({
         where: {
-          userID: userId,
+          userID: data.user_id,
         },
         data: {
-          password: newPasswordStr,
+          password: data.new_password,
         },
       });
 
