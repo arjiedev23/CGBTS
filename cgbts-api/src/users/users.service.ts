@@ -305,6 +305,7 @@ export class UsersService {
           street: data.street,
           house: data.house,
           room: data.room,
+          isVerified: data.isVerified,
         },
       });
 
