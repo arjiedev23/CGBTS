@@ -56,6 +56,10 @@ let UsersService = class UsersService {
                     user_id: createUserInfoDto.user_id,
                 };
             }
+            if (createUserInfoDto.first_name == '' ||
+                createUserInfoDto.last_name == '') {
+                return { respCode: 1, respMessage: '--' };
+            }
             const res = await this.saveUserInfo(createUserInfoDto);
             if (!res) {
                 return { respCode: 0, respMessage: 'User does not exist!' };
@@ -126,8 +130,7 @@ let UsersService = class UsersService {
             return { respCode: 1, respMessage: 'success', data: res };
         }
         catch (ex) {
-            console.log(ex);
-            throw new Error();
+            throw new Error(ex);
         }
     }
     async changePassword(changeUserPasswordDto) {
@@ -242,9 +245,10 @@ let UsersService = class UsersService {
                     relationship: createUserInfoDto.relationship,
                     users_id: createUserInfoDto.user_id,
                     contact_number: createUserInfoDto.contact_number,
+                    user_sex: createUserInfoDto.sex,
+                    education: createUserInfoDto.education,
                 },
             });
-            console.log(saveInfo);
             return saveInfo;
         }
         catch (ex) {
@@ -280,6 +284,7 @@ let UsersService = class UsersService {
                     street: data.street,
                     house: data.house,
                     room: data.room,
+                    isVerified: 1,
                 },
             });
             return update;

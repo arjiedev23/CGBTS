@@ -58,6 +58,13 @@ export class UsersService {
         };
       }
 
+      if (
+        createUserInfoDto.first_name == '' ||
+        createUserInfoDto.last_name == ''
+      ) {
+        return { respCode: 1, respMessage: '--' };
+      }
+
       const res = await this.saveUserInfo(createUserInfoDto);
 
       if (!res) {
@@ -134,9 +141,7 @@ export class UsersService {
 
       return { respCode: 1, respMessage: 'success', data: res };
     } catch (ex) {
-      console.log(ex);
-
-      throw new Error();
+      throw new Error(ex);
     }
   }
 
@@ -267,6 +272,8 @@ export class UsersService {
           relationship: createUserInfoDto.relationship,
           users_id: createUserInfoDto.user_id,
           contact_number: createUserInfoDto.contact_number,
+          user_sex: createUserInfoDto.sex,
+          education: createUserInfoDto.education,
         },
       });
 
@@ -305,7 +312,7 @@ export class UsersService {
           street: data.street,
           house: data.house,
           room: data.room,
-          isVerified: data.isVerified,
+          isVerified: 1,
         },
       });
 

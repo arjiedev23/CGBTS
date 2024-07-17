@@ -20,4 +20,5 @@ export declare class UpdateUserDto {
     street: string;
     house: string;
     room: string;
+    isVerified: number;
 }

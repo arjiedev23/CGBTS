@@ -29,6 +29,8 @@ export class CreateUserInfoDto {
   DOB: string;
   contact_number: string;
   relationship: string;
+  sex: string;
+  education: string;
   user_id: number;
 }
 

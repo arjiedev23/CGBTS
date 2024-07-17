@@ -66,6 +66,8 @@ model user_info {
   DOB            DateTime
   relationship   String
   contact_number String?
+  user_sex       String?
+  education      String?
   user           Users    @relation(fields: [users_id], references: [userID])
   users_id       Int
 }
