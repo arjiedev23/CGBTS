@@ -39,3 +39,9 @@ export class ChangeUserPasswordDto {
   user_id: number;
   current_password: string;
 }
+
+export class SaveSecurityQDto {
+  question: string;
+  answer: string;
+  user_id: number;
+}

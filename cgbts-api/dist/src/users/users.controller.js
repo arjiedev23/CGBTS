@@ -27,6 +27,12 @@ let UsersController = class UsersController {
     findAll() {
         return this.usersService.findAll();
     }
+    securityQuestions() {
+        return this.usersService.securityQuestions();
+    }
+    saveSecurityQuestion(saveSecurityQDto) {
+        return this.usersService.saveSecQuestions(saveSecurityQDto);
+    }
     userDetails(user) {
         return this.usersService.userDetails(user);
     }
@@ -54,6 +60,19 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('/securityQuestions'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "securityQuestions", null);
+__decorate([
+    (0, common_1.Post)('/saveSecurityQ'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_user_dto_1.SaveSecurityQDto]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "saveSecurityQuestion", null);
 __decorate([
     (0, common_1.Get)('/userDetails'),
     __param(0, (0, common_1.Query)('userid')),

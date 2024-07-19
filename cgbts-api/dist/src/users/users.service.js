@@ -74,6 +74,25 @@ let UsersService = class UsersService {
             throw new Error(ex);
         }
     }
+    async saveSecQuestions(saveSecurityQDto) {
+        try {
+            const checkUser = await this.findUser(saveSecurityQDto.user_id);
+            if (!checkUser) {
+                return { respCode: 0, respMessage: 'User does not exist!' };
+            }
+            if (saveSecurityQDto.answer === '' || saveSecurityQDto.question === '') {
+                return { respCode: 0, respMessage: 'Please input required fields!' };
+            }
+            const saveSecQ = await this.saveUserSecurityQuestions(saveSecurityQDto);
+            if (!saveSecQ) {
+                return { respCode: 0, respMessage: 'Saving error security questions' };
+            }
+            return { respCode: 1, respMessage: 'Save success', question: saveSecQ };
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
     async findUser(user) {
         try {
             const userCheck = this.prismaService.users.findFirst({
@@ -95,6 +114,15 @@ let UsersService = class UsersService {
                 },
             });
             return agency;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async securityQuestions() {
+        try {
+            const questions = await this.getSecurityQuestions();
+            return { respCode: 1, respMessage: questions };
         }
         catch (ex) {
             throw new Error(ex);
@@ -234,6 +262,30 @@ let UsersService = class UsersService {
                 },
             });
             return viewUser;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async getSecurityQuestions() {
+        try {
+            const questionList = this.prismaService.security_question.findMany();
+            return questionList;
+        }
+        catch (ex) {
+            throw new Error(ex);
+        }
+    }
+    async saveUserSecurityQuestions(data) {
+        try {
+            const saveQuestion = this.prismaService.user_security_questions.create({
+                data: {
+                    question: data.question,
+                    answer: data.answer,
+                    UserID: data.user_id,
+                },
+            });
+            return saveQuestion;
         }
         catch (ex) {
             throw new Error(ex);

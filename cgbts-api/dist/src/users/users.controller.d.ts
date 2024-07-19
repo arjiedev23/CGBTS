@@ -1,5 +1,5 @@
 import { UsersService } from './users.service';
-import { ChangeUserPasswordDto, CreateUserDto, CreateUserInfoDto } from './dto/create-user.dto';
+import { ChangeUserPasswordDto, CreateUserDto, CreateUserInfoDto, SaveSecurityQDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 export declare class UsersController {
     private readonly usersService;
@@ -66,6 +66,19 @@ export declare class UsersController {
             room: string | null;
             role_Id: number | null;
         }[];
+    }>;
+    securityQuestions(): Promise<{
+        respCode: number;
+        respMessage: any;
+    }>;
+    saveSecurityQuestion(saveSecurityQDto: SaveSecurityQDto): Promise<{
+        respCode: number;
+        respMessage: string;
+        question?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        question: any;
     }>;
     userDetails(user: number): Promise<{
         respCode: number;

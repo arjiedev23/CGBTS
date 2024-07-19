@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ChangeUserPasswordDto, CreateUserInfoDto } from './dto/create-user.dto';
+import { ChangeUserPasswordDto, CreateUserInfoDto, SaveSecurityQDto } from './dto/create-user.dto';
 export declare class UsersService {
     private readonly prismaService;
     constructor(prismaService: PrismaService);
@@ -37,8 +37,21 @@ export declare class UsersService {
         data: any;
         user_id?: undefined;
     }>;
+    saveSecQuestions(saveSecurityQDto: SaveSecurityQDto): Promise<{
+        respCode: number;
+        respMessage: string;
+        question?: undefined;
+    } | {
+        respCode: number;
+        respMessage: string;
+        question: any;
+    }>;
     findUser(user: number): Promise<any>;
     findAgency(agencyId: number): Promise<any>;
+    securityQuestions(): Promise<{
+        respCode: number;
+        respMessage: any;
+    }>;
     viewUsers(): Promise<{
         userID: number;
         username: string;
@@ -156,6 +169,8 @@ export declare class UsersService {
     }>;
     updateUserPassword(data: ChangeUserPasswordDto): Promise<any>;
     getUserDetails(user: number): Promise<any>;
+    getSecurityQuestions(): Promise<any>;
+    saveUserSecurityQuestions(data: SaveSecurityQDto): Promise<any>;
     saveUserInfo(createUserInfoDto: CreateUserInfoDto): Promise<any>;
     saveUserUpdate(user: number, data: UpdateUserDto): Promise<any>;
     createData(data: Prisma.UsersCreateInput): Promise<any>;

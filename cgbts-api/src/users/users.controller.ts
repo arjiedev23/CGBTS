@@ -4,6 +4,7 @@ import {
   ChangeUserPasswordDto,
   CreateUserDto,
   CreateUserInfoDto,
+  SaveSecurityQDto,
 } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -20,6 +21,16 @@ export class UsersController {
   // @UseGuards(JwtAuthGuard)
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Get('/securityQuestions')
+  securityQuestions() {
+    return this.usersService.securityQuestions();
+  }
+
+  @Post('/saveSecurityQ')
+  saveSecurityQuestion(@Body() saveSecurityQDto: SaveSecurityQDto) {
+    return this.usersService.saveSecQuestions(saveSecurityQDto);
   }
 
   @Get('/userDetails')
