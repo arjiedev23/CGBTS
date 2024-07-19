@@ -32,4 +32,22 @@ export class UtilityService {
       throw new Error(ex);
     }
   }
+
+  async checkIsVerified(userId: number): Promise<any> {
+    try {
+      const isVerified = this.prismaService.users.findUnique({
+        where: {
+          userID: userId,
+        },
+      });
+
+      if ((await isVerified).isVerified === 0) {
+        return null;
+      }
+
+      return isVerified;
+    } catch (ex) {
+      throw new Error(ex);
+    }
+  }
 }

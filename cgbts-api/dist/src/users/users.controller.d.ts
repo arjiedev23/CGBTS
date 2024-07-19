@@ -76,11 +76,14 @@ export declare class UsersController {
         respMessage: string;
         data: any;
     }>;
-    updateUserPaswword(changeUserPasswordDto: ChangeUserPasswordDto): Promise<any>;
+    updateUserPaswword(changeUserPasswordDto: ChangeUserPasswordDto): Promise<{
+        respCode: number;
+        respMessage: string;
+    }>;
     updateUser(user: string, updateUserDto: UpdateUserDto): Promise<{
         respCode: number;
         respMessage: string;
-        agency: number;
+        agency: string;
         updatedDetails?: undefined;
     } | {
         respCode: number;

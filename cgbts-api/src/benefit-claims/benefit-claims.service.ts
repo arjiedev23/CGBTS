@@ -15,16 +15,24 @@ export class BenefitClaimsService {
         Number(createBenefitClaimDto.user_id),
       );
 
-      const checkAgency = await this.utilityService.findAgency(
-        Number(createBenefitClaimDto.agency_id),
-      );
-
       if (!checkUser) {
         return { respCode: 0, respMessage: 'User not found!' };
       }
 
+      const checkAgency = await this.utilityService.findAgency(
+        Number(createBenefitClaimDto.agency_id),
+      );
+
       if (!checkAgency) {
         return { respCode: 0, respMessage: 'Agency not found!' };
+      }
+
+      const verify = await this.utilityService.checkIsVerified(
+        createBenefitClaimDto.user_id,
+      );
+
+      if (verify === null) {
+        return { respCode: 0, respMessage: 'User is not verified!' };
       }
 
       const checkContribution = await this.prismaService.contributions.findMany(

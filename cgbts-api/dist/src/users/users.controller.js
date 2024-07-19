@@ -31,7 +31,7 @@ let UsersController = class UsersController {
         return this.usersService.userDetails(user);
     }
     updateUserPaswword(changeUserPasswordDto) {
-        return this.usersService.updateUserPassword(changeUserPasswordDto);
+        return this.usersService.changePassword(changeUserPasswordDto);
     }
     updateUser(user, updateUserDto) {
         return this.usersService.updateUser(+user, updateUserDto);

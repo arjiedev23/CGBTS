@@ -167,7 +167,7 @@ let UsersService = class UsersService {
                 },
             });
             if (checkSSS.length != 0) {
-                return { respCode: 0, respMessage: 'Invalid ID', agency: 2 };
+                return { respCode: 0, respMessage: 'Invalid Agency ID', agency: 'SSS' };
             }
             const checkPagibig = await this.prismaService.users.findMany({
                 where: {
@@ -175,7 +175,11 @@ let UsersService = class UsersService {
                 },
             });
             if (checkPagibig.length != 0) {
-                return { respCode: 0, respMessage: 'Invalid ID', agency: 3 };
+                return {
+                    respCode: 0,
+                    respMessage: 'Invalid Agency ID',
+                    agency: 'Pag-ibig',
+                };
             }
             const checkPhilH = await this.prismaService.users.findMany({
                 where: {
@@ -183,7 +187,11 @@ let UsersService = class UsersService {
                 },
             });
             if (checkPhilH.length != 0) {
-                return { respCode: 0, respMessage: 'Invalid ID', agency: 4 };
+                return {
+                    respCode: 0,
+                    respMessage: 'Invalid Agency ID',
+                    agency: 'PhilHealth',
+                };
             }
             const update = await this.saveUserUpdate(id, updateUserDto);
             if (!update) {

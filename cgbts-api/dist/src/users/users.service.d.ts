@@ -141,7 +141,7 @@ export declare class UsersService {
     updateUser(id: number, updateUserDto: UpdateUserDto): Promise<{
         respCode: number;
         respMessage: string;
-        agency: number;
+        agency: string;
         updatedDetails?: undefined;
     } | {
         respCode: number;

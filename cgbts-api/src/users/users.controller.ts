@@ -29,7 +29,7 @@ export class UsersController {
 
   @Post('/updatePasswordUser')
   updateUserPaswword(@Body() changeUserPasswordDto: ChangeUserPasswordDto) {
-    return this.usersService.updateUserPassword(changeUserPasswordDto);
+    return this.usersService.changePassword(changeUserPasswordDto);
   }
 
   @Patch('/updateUser')
