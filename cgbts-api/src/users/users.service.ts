@@ -220,7 +220,11 @@ export class UsersService {
       });
 
       if (checkSSS.length != 0) {
-        return { respCode: 0, respMessage: 'Invalid Agency ID', agency: 'SSS' };
+        return {
+          respCode: 0,
+          respMessage: 'SSS number already exists!',
+          agency: 'SSS',
+        };
       }
 
       const checkPagibig = await this.prismaService.users.findMany({
@@ -232,7 +236,7 @@ export class UsersService {
       if (checkPagibig.length != 0) {
         return {
           respCode: 0,
-          respMessage: 'Invalid Agency ID',
+          respMessage: 'Pag-ibig number already exists!',
           agency: 'Pag-ibig',
         };
       }
@@ -246,7 +250,7 @@ export class UsersService {
       if (checkPhilH.length != 0) {
         return {
           respCode: 0,
-          respMessage: 'Invalid Agency ID',
+          respMessage: 'PhilHealth number already exists!',
           agency: 'PhilHealth',
         };
       }
